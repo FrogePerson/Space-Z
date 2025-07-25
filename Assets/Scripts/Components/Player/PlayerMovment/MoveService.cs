@@ -38,45 +38,58 @@ namespace Player.PlayerMovment
             groundMask = LayerMask.GetMask("Ground");
         }
 
-        public void CheckGround()
+        //public void CheckGround()
+        //{
+        //     RaycastHit hit;
+
+        //     Debug.DrawRay(transform.position + Vector3.up * groundCheckRadius,
+        //     Vector3.down * groundDistance,
+        //     Color.red, 1f);
+
+        //    if (Physics.SphereCast(transform.position + Vector3.up * groundCheckRadius,
+        //        groundCheckRadius,
+        //        Vector3.down,
+        //        out hit,
+        //        groundDistance,
+        //        groundMask
+        //        ))
+        //    {
+        //        if (hit.collider.bounds.size.magnitude < 1f)
+        //        {
+        //            return;
+        //        }
+
+        //        float angle = Vector3.Angle(hit.normal, Vector3.up);
+        //        IsGrounded = angle <= maxgroundAngle;
+
+        //        if (IsGrounded)
+        //        {
+        //            groundNormal = hit.normal;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        IsGrounded= false;
+        //        groundNormal = Vector3.up;
+        //    }
+        //}
+
+        void OnCollisionStay(Collision collision)
         {
-             RaycastHit hit;
-
-             Debug.DrawRay(transform.position + Vector3.up * groundCheckRadius,
-             Vector3.down * groundDistance,
-             Color.red, 1f);
-
-            if (Physics.SphereCast(transform.position + Vector3.up * groundCheckRadius,
-                groundCheckRadius,
-                Vector3.down,
-                out hit,
-                groundDistance,
-                groundMask
-                ))
+            foreach (ContactPoint contact in collision.contacts)
             {
-                if (hit.collider.bounds.size.magnitude < 1f)
+                if (Vector3.Dot(contact.normal, Vector3.up) > 0.5f)
                 {
-                    return;
+                    IsGrounded = true;
+                    groundNormal = contact.normal;
+
                 }
 
-                float angle = Vector3.Angle(hit.normal, Vector3.up);
-                IsGrounded = angle <= maxgroundAngle;
-
-                if (IsGrounded)
-                {
-                    groundNormal = hit.normal;
-                }
-            }
-            else
-            {
-                IsGrounded= false;
-                groundNormal = Vector3.up;
             }
         }
 
         public void Move(Vector3 input)
         {
-            CheckGround();
 
             if (IsGrounded)
             {
@@ -86,7 +99,7 @@ namespace Player.PlayerMovment
 
                 velocityChange.y = 0f;
 
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                rb.AddForce(velocityChange, ForceMode.VelocityChange); 
             }
         }
     }
