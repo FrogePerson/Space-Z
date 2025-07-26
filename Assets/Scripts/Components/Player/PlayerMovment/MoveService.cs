@@ -94,6 +94,7 @@ namespace Player.PlayerMovment
             if (IsGrounded)
             {
                 Vector3 moveDirection = Vector3.ProjectOnPlane(input.normalized, groundNormal);
+                moveDirection = transform.TransformDirection(moveDirection);
                 Vector3 targetVelocity = (moveDirection * MoveSpeed) + relativeVelocity;
                 Vector3 velocityChange = targetVelocity - rb.linearVelocity;
 
