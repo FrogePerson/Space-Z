@@ -21,58 +21,18 @@ namespace Player.PlayerMovment
         [SerializeField]
         private float maxgroundAngle = 45f;
         [SerializeField]
-        LayerMask groundMask;
 
         Rigidbody rb;
         Vector3 groundNormal = Vector3.zero;
         Vector3 relativeVelocity = Vector3.zero;
 
-        float groundCheckRadius = 0.5f;
-        float groundDistance = 1;
         bool IsGrounded = false;
 
         void OnEnable()
         {
             rb = GetComponent<Rigidbody>();
             rb.freezeRotation = true;
-            groundMask = LayerMask.GetMask("Ground");
         }
-
-        //public void CheckGround()
-        //{
-        //     RaycastHit hit;
-
-        //     Debug.DrawRay(transform.position + Vector3.up * groundCheckRadius,
-        //     Vector3.down * groundDistance,
-        //     Color.red, 1f);
-
-        //    if (Physics.SphereCast(transform.position + Vector3.up * groundCheckRadius,
-        //        groundCheckRadius,
-        //        Vector3.down,
-        //        out hit,
-        //        groundDistance,
-        //        groundMask
-        //        ))
-        //    {
-        //        if (hit.collider.bounds.size.magnitude < 1f)
-        //        {
-        //            return;
-        //        }
-
-        //        float angle = Vector3.Angle(hit.normal, Vector3.up);
-        //        IsGrounded = angle <= maxgroundAngle;
-
-        //        if (IsGrounded)
-        //        {
-        //            groundNormal = hit.normal;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        IsGrounded= false;
-        //        groundNormal = Vector3.up;
-        //    }
-        //}
 
         void OnCollisionStay(Collision collision)
         {
@@ -82,7 +42,7 @@ namespace Player.PlayerMovment
                 {
                     IsGrounded = true;
                     groundNormal = contact.normal;
-
+                    //счётчик коллизий
                 }
 
             }
@@ -90,7 +50,8 @@ namespace Player.PlayerMovment
 
         public void Move(Vector3 input)
         {
-
+            //если счётчик == 0 то мы ввоздухе
+            //счётчик коллизий обнуляем
             if (IsGrounded)
             {
                 Vector3 moveDirection = Vector3.ProjectOnPlane(input.normalized, groundNormal);
@@ -100,7 +61,8 @@ namespace Player.PlayerMovment
 
                 velocityChange.y = 0f;
 
-                rb.AddForce(velocityChange, ForceMode.VelocityChange); 
+                rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                Debug.Log($"input = {input}, velocityChange = {velocityChange}");
             }
         }
     }
