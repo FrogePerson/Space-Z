@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using UnityEngine;
 
 namespace Player.PlayerMovment
@@ -6,7 +7,7 @@ namespace Player.PlayerMovment
 
     [RequireComponent(typeof(Rigidbody))]
     [Tooltip("Класс для реализации передвижения игрока")]
-    public class MoveService : MonoBehaviour
+    public class MoveService : NetworkBehaviour
     {
 
         [Header("Movment")]
@@ -62,7 +63,7 @@ namespace Player.PlayerMovment
                 velocityChange.y = 0f;
 
                 rb.AddForce(velocityChange, ForceMode.VelocityChange);
-                Debug.Log($"input = {input}, velocityChange = {velocityChange}");
+                //Debug.Log($"input = {input}, velocityChange = {velocityChange}");
             }
         }
     }
