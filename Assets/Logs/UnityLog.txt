@@ -1,0 +1,7 @@
+2025-08-01 21:24:44,687 [1] INFO  Log4NetLoader - Log4Net configured! Logs will be saved to: C:/Users/User/Space Z/Assets\Logs\UnityLog.txt
+2025-08-01 21:24:44,699 [1] INFO  Log4NetLoader - Тестовое сообщение в лог
+2025-08-01 21:25:18,444 [1] INFO  Log4NetLoader - Log4Net configured! Logs will be saved to: C:/Users/User/Space Z/Assets\Logs\UnityLog.txt
+2025-08-01 21:25:18,453 [1] INFO  Log4NetLoader - Тестовое сообщение в лог
+2025-08-01 21:27:23,767 [1] INFO  Log4NetLoader - Log4Net configured! Logs will be saved to: C:/Users/User/Space Z/Assets\Logs\UnityLog.txt
+2025-08-01 21:27:23,780 [1] INFO  Log4NetLoader - Тестовое сообщение в лог
+2025-08-01 21:27:25,658 [1] DEBUG Player.Player - Player: Создан игрок с id: 1

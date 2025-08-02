@@ -31,9 +31,6 @@ namespace Player.PlayerMovment
             {
                 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             }
-
-            input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));  
-            //Debug.Log($"Player::MoveController:Ќжатие {input}");
         }
     }
 }

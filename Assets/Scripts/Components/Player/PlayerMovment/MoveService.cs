@@ -1,6 +1,8 @@
-﻿using Mirror;
-using System.Collections;
+﻿using log4net;
+using Mirror;
+using Mirror.Examples.Benchmark;
 using UnityEngine;
+
 
 namespace Player.PlayerMovment
 {
@@ -9,25 +11,34 @@ namespace Player.PlayerMovment
     [Tooltip("Класс для реализации передвижения игрока")]
     public class MoveService : NetworkBehaviour
     {
+        static readonly ILog log = LogManager.GetLogger(typeof(PlayerMovement));
+        public bool IsDebug = false;
+        public readonly NetworkIdentity playerIdentity;
 
-        [Header("Movment")]
-
-        [SerializeField]
-        private float _moveSpeed = 5f;
-        public float MoveSpeed
-        {
-            get { return _moveSpeed; }
-            set { _moveSpeed = value; }
-        }
-        [SerializeField]
-        private float maxgroundAngle = 45f;
-        [SerializeField]
 
         Rigidbody rb;
+
+        
         Vector3 groundNormal = Vector3.zero;
         Vector3 relativeVelocity = Vector3.zero;
 
-        bool IsGrounded = false;
+
+        [SerializeField]
+        float _moveSpeed = 5f;
+        public float MoveSpeed
+        {
+            get
+            {
+                return _moveSpeed;
+            }
+            set
+            {
+                _moveSpeed = value;
+            }
+        }
+
+
+        public bool IsGrounded = false;
 
         void OnEnable()
         {
@@ -44,8 +55,11 @@ namespace Player.PlayerMovment
                     IsGrounded = true;
                     groundNormal = contact.normal;
                     //счётчик коллизий
+                    if (IsDebug)
+                    {
+                        log.Debug($"Player::MoveController::MoveService: Игрок c id  стоит на поверхности");
+                    }
                 }
-
             }
         }
 
@@ -63,7 +77,11 @@ namespace Player.PlayerMovment
                 velocityChange.y = 0f;
 
                 rb.AddForce(velocityChange, ForceMode.VelocityChange);
-                //Debug.Log($"input = {input}, velocityChange = {velocityChange}");
+                if (IsDebug)
+                {
+                    log.Debug($"Player::MoveController::MoveService: Игрок c id " +
+                        $"двигается по поверхности с velocityChange = {velocityChange}");
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using log4net;
+using Mirror;
 using Player.PlayerMovment;
 using System.Collections;
 using UnityEditor.SceneManagement;
@@ -14,7 +15,7 @@ namespace Player
     public class Player : NetworkBehaviour
     {
         #region Start
-
+        static readonly ILog log = LogManager.GetLogger(typeof(Player));
         [SerializeField]
         Camera camera;
 
@@ -26,7 +27,7 @@ namespace Player
         {
             MoveController moveController = gameObject.GetComponent<MoveController>() ?? gameObject.AddComponent<MoveController>();
 
-            
+            log.Debug($"Player: Создан игрок");
         }
         void Start()
         {
