@@ -15,7 +15,10 @@ namespace Player
     public class Player : NetworkBehaviour
     {
         #region Start
+
+#if UNITY_EDITOR
         static readonly ILog log = LogManager.GetLogger(typeof(Player));
+#endif
         [SerializeField]
         Camera camera;
 
@@ -27,7 +30,9 @@ namespace Player
         {
             MoveController moveController = gameObject.GetComponent<MoveController>() ?? gameObject.AddComponent<MoveController>();
 
+#if UNITY_EDITOR
             log.Debug($"Player: Создан игрок");
+#endif
         }
         void Start()
         {

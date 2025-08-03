@@ -12,7 +12,9 @@ namespace Settings
         [SerializeField]
         bool IsClampFPS = true;
 
-        static readonly ILog log = LogManager.GetLogger(typeof(Log4NetLoader));
+#if UNITY_EDITOR
+        static readonly ILog log = LogManager.GetLogger(typeof(Settings));
+#endif
 
         void Start ()
         {
@@ -22,8 +24,17 @@ namespace Settings
         void ApplySettings()
         {
             Application.targetFrameRate = FPS;
+
+#if UNITY_EDITOR
             log.Debug("Settings: Применены настройки игрока");
+#endif
+        }
+        void OnApplicationQuit()
+        {
+            log4net.LogManager.Shutdown();
+            log.Info("Выключили log4net");
         }
     }
+
 }
 

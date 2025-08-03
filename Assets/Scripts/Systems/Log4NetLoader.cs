@@ -1,12 +1,15 @@
-using UnityEngine;
-using log4net;
+Ôªøusing log4net;
 using log4net.Config;
-using System.IO;
 using System;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
 
 public static class Log4NetLoader
 {
+#if UNITY_EDITOR
     static readonly ILog log = LogManager.GetLogger(typeof(Log4NetLoader));
+#endif
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Configure()
@@ -24,7 +27,10 @@ public static class Log4NetLoader
             {
                 XmlConfigurator.Configure(new MemoryStream(configFile.bytes));
 
-                log.Info($"Log4NetLoader: Log4Net Á‡ÔÛ˘ÂÌ");
+#if UNITY_EDITOR
+                log.Info($"Log4NetLoader: Log4Net –∑–∞–ø—É—â–µ–Ω");
+#endif
+
             }
             else
             {
