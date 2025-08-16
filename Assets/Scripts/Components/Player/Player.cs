@@ -16,9 +16,10 @@ namespace Player
     {
         #region Start
 
-#if UNITY_EDITOR
-        static readonly ILog log = LogManager.GetLogger(typeof(Player));
-#endif
+
+        static readonly ILog log = Log4NetLogger.SetLogger(typeof(Player));
+
+
         [SerializeField]
         Camera camera;
 
@@ -28,11 +29,10 @@ namespace Player
         }
         void assembling()
         {
-            MoveController moveController = gameObject.GetComponent<MoveController>() ?? gameObject.AddComponent<MoveController>();
+            MoveController moveController = gameObject.GetComponent<MoveController>() ?? 
+                gameObject.AddComponent<MoveController>();
 
-#if UNITY_EDITOR
-            log.Debug($"Player: Создан игрок");
-#endif
+            Log4NetLogger.LogDbg($"Создан игрок", log);
         }
         void Start()
         {

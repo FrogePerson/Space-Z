@@ -2,7 +2,6 @@
 using log4net.Config;
 using System;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
 
 public static class Log4NetLoader
@@ -28,7 +27,7 @@ public static class Log4NetLoader
                 XmlConfigurator.Configure(new MemoryStream(configFile.bytes));
 
 #if UNITY_EDITOR
-                log.Info($"Log4NetLoader: Log4Net запущен");
+                log.Info($"Log4Net запущен");
 #endif
 
             }

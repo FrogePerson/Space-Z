@@ -11,10 +11,9 @@ namespace Player.PlayerMovment
     [Tooltip("Класс для реализации передвижения игрока")]
     public class MoveService : NetworkBehaviour
     {
-#if UNITY_EDITOR
-        static readonly ILog log = LogManager.GetLogger(typeof(PlayerMovement));
+        static readonly ILog log = Log4NetLogger.SetLogger(typeof(MoveService));
         public bool IsDebug = false;
-#endif
+
         public readonly NetworkIdentity playerIdentity;
 
 
@@ -57,12 +56,7 @@ namespace Player.PlayerMovment
                     IsGrounded = true;
                     groundNormal = contact.normal;
                     //счётчик коллизий
-#if UNITY_EDITOR
-                    if (IsDebug)
-                    {
-                        log.Debug($"Player::MoveController::MoveService: Игрок c id  стоит на поверхности");
-                    }
-#endif
+                    Log4NetLogger.LogDbg($"Игрок c id  стоит на поверхности", log, IsDebug);
                 }
             }
         }
@@ -82,13 +76,8 @@ namespace Player.PlayerMovment
 
                 rb.AddForce(velocityChange, ForceMode.VelocityChange);
 
-#if UNITY_EDITOR
-                if (IsDebug)
-                {
-                    log.Debug($"Player::MoveController::MoveService: Игрок c id " +
-                        $"двигается по поверхности с velocityChange = {velocityChange}");
-                }
-#endif
+                Log4NetLogger.LogDbg($"Игрок c id " +
+                        $"двигается по поверхности с velocityChange = {velocityChange}", log, IsDebug);
             }
         }
     }
