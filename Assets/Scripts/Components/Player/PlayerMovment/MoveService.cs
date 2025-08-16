@@ -14,7 +14,7 @@ namespace Player.PlayerMovment
         static readonly ILog log = Log4NetLogger.SetLogger(typeof(MoveService));
         public bool IsDebug = false;
 
-        public readonly NetworkIdentity playerIdentity;
+        public uint playerIdentity = 0;
 
 
         Rigidbody rb;
@@ -56,7 +56,7 @@ namespace Player.PlayerMovment
                     IsGrounded = true;
                     groundNormal = contact.normal;
                     //счётчик коллизий
-                    Log4NetLogger.LogDbg($"Игрок c id  стоит на поверхности", log, IsDebug);
+                    Log4NetLogger.LogDbg($"Игрок c id {playerIdentity} стоит на поверхности", log, IsDebug);
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace Player.PlayerMovment
 
                 rb.AddForce(velocityChange, ForceMode.VelocityChange);
 
-                Log4NetLogger.LogDbg($"Игрок c id " +
+                Log4NetLogger.LogDbg($"Игрок c id {playerIdentity} " +
                         $"двигается по поверхности с velocityChange = {velocityChange}", log, IsDebug);
             }
         }

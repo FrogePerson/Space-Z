@@ -14,13 +14,15 @@ namespace Player.PlayerMovment
         Vector3 input = Vector3.zero;
         MoveService service;
 
-        void OnEnable()
+        void Start()
         {
             service = GetComponent<MoveService>();
             player = GetComponent<Player>();
+
+            service.playerIdentity = player.netIdentity.netId;
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
             service.Move(input);
         }
