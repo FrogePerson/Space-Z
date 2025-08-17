@@ -19,7 +19,7 @@ namespace Player.PlayerMovment
             service = GetComponent<MoveService>();
             player = GetComponent<Player>();
 
-            service.playerIdentity = player.netIdentity.netId;
+            service.playerIdentity = player.ConnId;
         }
 
         void FixedUpdate()

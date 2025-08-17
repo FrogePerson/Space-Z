@@ -19,9 +19,13 @@ namespace Player
 
         static readonly ILog log = Log4NetLogger.SetLogger(typeof(Player));
 
+        public int ConnId;
+
 
         [SerializeField]
+#pragma warning disable CS0108
         Camera camera;
+#pragma warning restore CS0108
 
         void OnEnable()
         {

@@ -14,7 +14,7 @@ namespace Player.PlayerMovment
         static readonly ILog log = Log4NetLogger.SetLogger(typeof(MoveService));
         public bool IsDebug = false;
 
-        public uint playerIdentity = 0;
+        public int playerIdentity = 0;
 
 
         Rigidbody rb;
