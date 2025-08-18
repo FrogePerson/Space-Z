@@ -32,6 +32,11 @@ namespace Player.PlayerMovment
             if (player.isLocalPlayer)
             {
                 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+                if(Input.GetKeyDown(KeyCode.X))
+                {
+                    player.TakeDamage(5);//TEST
+                }
             }
         }
     }
