@@ -9,7 +9,7 @@ namespace Player.PlayerMovment
 
     [RequireComponent(typeof(Rigidbody))]
     [Tooltip("Класс для реализации передвижения игрока")]
-    public class MoveService : NetworkBehaviour
+    public class MoveService : MonoBehaviour
     {
         static readonly ILog log = Log4NetLogger.SetLogger(typeof(MoveService));
         public bool IsDebug = false;

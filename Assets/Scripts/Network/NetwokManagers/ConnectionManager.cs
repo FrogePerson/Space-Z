@@ -92,6 +92,13 @@ public class ConnectionManager : NetworkManager
         
     }
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        NetworkServer.RegisterHandler<ByteDataMessage>(ServerHandler.ByteDataMessageHandle);
+    }
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if (CanClientConnect)

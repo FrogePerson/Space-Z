@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2432013958383873386}
   - component: {fileID: 7410810133478759067}
   - component: {fileID: 2231742439632900517}
+  - component: {fileID: 6695661088278915310}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -51,6 +52,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  ConnId: 0
   camera: {fileID: 7192508534853103615}
 --- !u!114 &7410810133478759067
 MonoBehaviour:
@@ -103,6 +105,22 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &6695661088278915310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168626757951799388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39831c2ab2a96f84faf686c0733dc5e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  IsLampON: 0
 --- !u!1 &2049166209922773516
 GameObject:
   m_ObjectHideFlags: 0

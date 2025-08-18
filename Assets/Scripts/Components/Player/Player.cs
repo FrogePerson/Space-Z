@@ -1,5 +1,6 @@
 ﻿using log4net;
 using Mirror;
+using Player.PlayerLamp;
 using Player.PlayerMovment;
 using System.Collections;
 using UnityEditor.SceneManagement;
@@ -35,6 +36,8 @@ namespace Player
         {
             MoveController moveController = gameObject.GetComponent<MoveController>() ?? 
                 gameObject.AddComponent<MoveController>();
+
+            //PlayerLampController playerLampController = gameObject.AddComponent<PlayerLampController>();
 
             Log4NetLogger.LogDbg($"Создан игрок", log);
         }
