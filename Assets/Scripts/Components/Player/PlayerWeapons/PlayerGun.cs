@@ -3,7 +3,7 @@ using Mirror;
 
 namespace Player.PlayerWeapons
 {
-    public class PlayerGun : PlayerWeapon
+    public abstract class PlayerGun : PlayerWeapon
     {
         [SerializeField]
         Pool Pool;

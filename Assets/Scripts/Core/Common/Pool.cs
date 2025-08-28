@@ -1,10 +1,14 @@
 using Interfaces;
+using log4net;
 using Mirror;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Pool : NetworkBehaviour
 {
+    static readonly ILog log = Log4NetLogger.SetLogger(typeof(Pool));
+
     [Header("Настройки")]
     [SerializeField] private GameObject[] gameObjects;
     [SyncVar] public int SumOfAvailableObjects = 0;
@@ -19,6 +23,8 @@ public class Pool : NetworkBehaviour
         if (gameObjects == null || gameObjects.Length == 0)
         {
             Debug.LogError("Нет объектов в пуле");
+
+            Log4NetLogger.LogError("Нет объектов в пуле", log);
             return;
         }
 
@@ -31,6 +37,7 @@ public class Pool : NetworkBehaviour
             objectToIndex[obj] = i;
             obj.SetActive(false);
         }
+        Log4NetLogger.Log($"Инициализирован пулл c {gameObjects.Length} объектами", log);
     }
 
     #region Server Side
@@ -40,17 +47,20 @@ public class Pool : NetworkBehaviour
     {
         if (stack.Count == 0)
         {
+            Log4NetLogger.Log($"Закончилсь объекты в пулле!", log);
             return null;
         }
 
         GameObject obj = stack.Pop();
         SumOfAvailableObjects--;
 
-        // Активируем объект на сервере
         obj.SetActive(true);
 
-        // Синхронизируем клиентам
-        RpcActivateObject(GetObjectIndex(obj));
+        int index = GetObjectIndex(obj);
+
+        RpcActivateObject(index);
+
+        Log4NetLogger.Log($"Включен объект с индексом {index} на сервере ", log);
 
         return obj;
     }
@@ -60,7 +70,7 @@ public class Pool : NetworkBehaviour
     {
         if (!objectToIndex.ContainsKey(obj))
         {
-            Debug.LogWarning("Объект не из пулла!");
+            Log4NetLogger.LogError($"Объект не из пулла!", log);
             return;
         }
 
@@ -69,7 +79,11 @@ public class Pool : NetworkBehaviour
 
         obj.SetActive(false);
 
-        RpcDeactivateObject(GetObjectIndex(obj));
+        int index = GetObjectIndex(obj);
+
+        RpcDeactivateObject(index);
+
+        Log4NetLogger.Log($"Выключен объект с индексом {index} на сервере ", log);
     }
 
     [Server]
@@ -85,6 +99,8 @@ public class Pool : NetworkBehaviour
     {
         if (index >= 0 && index < gameObjects.Length)
             return gameObjects[index];
+
+        Log4NetLogger.LogError($"Нет объекта в пуле с индексом = {index}", log);
         return null;
     }
 
@@ -95,6 +111,8 @@ public class Pool : NetworkBehaviour
         if (obj != null)
         {
             obj.SetActive(true);
+
+            Log4NetLogger.Log($"Включен объект с индексом {objectIndex} на клиенте ", log);
         }
     }
 
@@ -109,6 +127,8 @@ public class Pool : NetworkBehaviour
             poolObj.ReturnToPool();
 
             obj.SetActive(false);
+
+            Log4NetLogger.Log($"Выключен объект с индексом {objectIndex} на клиенте ", log);
         }
     }
 
