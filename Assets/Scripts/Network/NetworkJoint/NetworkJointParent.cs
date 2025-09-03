@@ -6,7 +6,7 @@ namespace Network.NetworkJoint
     [RequireComponent(typeof(Rigidbody))]
     public class NetworkJointParent : NetworkBehaviour
     {
-        [SerializeField] private float breakForce = 50f;
+        [SerializeField] private float breakForce = 50f;//минимальная сила для отлома
         [SerializeField] private float checkRadius = 0.0001f;
 
         private Rigidbody rb;
@@ -45,7 +45,7 @@ namespace Network.NetworkJoint
                         
                         if(force.magnitude >= breakForce)
                         {
-                            BreakJoint(contact.thisCollider.gameObject);
+                            TryToBreakJoint(contact.thisCollider.gameObject, force.magnitude);
                         }
                     }
                 }
@@ -53,11 +53,17 @@ namespace Network.NetworkJoint
         }
 
         [Server]
-        void BreakJoint(GameObject obj)
+        bool TryToBreakJoint(GameObject obj, float force)
         {
-            var tmp = obj.GetComponent<NetworkJoint>();
+            var tmp = obj.GetComponent<NetworkDetail>();
 
-            tmp.BreakSelf();
+            if(force >= tmp.Joint.BreakForce)
+            {
+                tmp.Joint.BreakSelf();
+
+                return true;
+            }
+            return false;
         }
 
         #endregion

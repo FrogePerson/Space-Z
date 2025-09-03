@@ -33,7 +33,7 @@ public class AddingComponentsToChildren : EditorWindow
         {
             if (GUILayout.Button("Добавить NetworkDetail"))
             {
-                AddComponentsToChildren<NetworkDetail>();
+                AddNetworkDetailToChildren();
             }
 
             if (GUILayout.Button("Удалить NetworkDetail"))
@@ -101,10 +101,36 @@ public class AddingComponentsToChildren : EditorWindow
 
         foreach(Transform child in childrens)
         {
-            if(!child.gameObject.GetComponent<T>())
+            if (!child.gameObject.GetComponent<T>())
+            {
                 child.gameObject.AddComponent<T>();
+            }      
         }
     }
+
+    public static void AddNetworkDetailToChildren()
+    {
+        GameObject selectedObj = Selection.activeGameObject;
+
+        List<Transform> childrens = new List<Transform>();
+
+        getChildrenRecursive(selectedObj.transform, childrens);
+
+        foreach (Transform child in childrens)
+        {
+            if (!child.gameObject.GetComponent<NetworkDetail>())
+            {
+                if (child.gameObject.GetComponent<Collider>() != null)
+                {
+                    child.gameObject.AddComponent<NetworkDetail>();
+                    var detail = child.gameObject.GetComponent<NetworkDetail>();
+
+                    detail.Parent = selectedObj;
+                }
+            }
+        }
+    }
+
 
     static void getChildrenRecursive(Transform parent, List<Transform> childrens)
     {
