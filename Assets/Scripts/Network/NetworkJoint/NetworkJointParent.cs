@@ -45,7 +45,7 @@ namespace Network.NetworkJoint
                         
                         if(force.magnitude >= breakForce)
                         {
-                            TryToBreakJoint(contact.thisCollider.gameObject, force.magnitude);
+                            TryBreakJoint(contact.thisCollider.gameObject, force.magnitude);
                         }
                     }
                 }
@@ -53,13 +53,17 @@ namespace Network.NetworkJoint
         }
 
         [Server]
-        bool TryToBreakJoint(GameObject obj, float force)
+        bool TryBreakJoint(GameObject obj, float force)
         {
             var tmp = obj.GetComponent<NetworkDetail>();
+            if(tmp.Joint == null)
+            {
+                return false;//подумать что делать в этом случае
+            }
 
             if(force >= tmp.Joint.BreakForce)
             {
-                tmp.Joint.BreakSelf();
+                tmp.Joint.RpcBreakSelf();
 
                 return true;
             }

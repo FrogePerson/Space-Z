@@ -177,8 +177,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   pool: {fileID: 0}
-  shootForce: 30
+  MyNumber: 0
+  shootForce: 300
   target: {x: 0, y: 0, z: 1}
+  SpawnObject: {fileID: 0}
 --- !u!54 &3470957061577174180
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -187,7 +189,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7002623666746715586}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
