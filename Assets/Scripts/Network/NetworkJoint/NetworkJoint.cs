@@ -96,6 +96,7 @@ namespace Network.NetworkJoint
             {
                 joint.AddConns(gameObject);
             }
+            networkObj.SetActive(false);
         }
 
         public void AddConns(GameObject[] objects)
