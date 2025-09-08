@@ -27,13 +27,25 @@ namespace Network.Synchronizers
         [SyncVar]
         Vector3 serverAngularVelocity;
 
+        [Header("Сетевые настройки")]
+        [SerializeField]
+        float updateTime = 0.05f; //20 фпс, НЕ МЕНЯТЬ В RUN TIME!
+        [SerializeField]
+        float minUpdateDistance = 0.01f;
+        [SerializeField]
+        float minUpdateRotation = 0.1f;
+
+        Vector3 lastSendPosition;
+        Quaternion lastSendRotation;
+
+
         [Header("Силы синхронизации")]
         [SerializeField]
-        float positionForce = 10f;
+        float positionForce = 100f;
         [SerializeField]
-        float rotationForce = 5f;
+        float rotationForce = 50f;
         [SerializeField]
-        float maxForce = 50f;
+        float maxForce = 500f;
         [SerializeField]
         float smoothTime = 0.1f;
 
@@ -50,16 +62,33 @@ namespace Network.Synchronizers
         {
             base.OnStartServer();
 
-            InvokeRepeating(nameof(ServerUpdatePositionState), 0f, 0.05f);//20 фпс
+            InvokeRepeating(nameof(ServerUpdatePositionState), 0f, updateTime);
         }
 
         [Server]
         void ServerUpdatePositionState()
         {
-            serverPosition = rb.position;
-            serverRotation = rb.rotation;
-            serverVelocity = rb.linearVelocity;
-            serverAngularVelocity = rb.angularVelocity;
+            float posDelta = Vector3.Distance(lastSendPosition, rb.position);
+            float rotDelta = Quaternion.Angle(rb.rotation, lastSendRotation);
+
+            if (posDelta > minUpdateDistance)
+            {
+                serverPosition = rb.position;
+                serverVelocity = rb.linearVelocity;
+                lastSendPosition = serverPosition;
+            }
+
+            if (rotDelta > minUpdateRotation)
+            {
+                serverRotation = rb.rotation;
+                serverAngularVelocity = rb.angularVelocity;
+                lastSendRotation = serverRotation;
+            }
+
+            //serverPosition = rb.position;
+            //serverRotation = rb.rotation;
+            //serverVelocity = rb.linearVelocity;
+            //serverAngularVelocity = rb.angularVelocity;
         }
 
         #endregion
@@ -99,7 +128,7 @@ namespace Network.Synchronizers
         {
             positionError = serverPosition - rb.position;
 
-            rotationError = rb.rotation * Quaternion.Inverse(rb.rotation);
+            rotationError = serverRotation * Quaternion.Inverse(rb.rotation);
             rotationError.ToAngleAxis(out float angle, out Vector3 axis);
             if (angle > 180f) angle -= 360f;
 
@@ -116,6 +145,7 @@ namespace Network.Synchronizers
             targetForce = Vector3.ClampMagnitude(targetForce, maxForce);
 
             rb.AddForce(targetForce, ForceMode.Acceleration);
+            Debug.Log($"Применена сила к {gameObject.name} в размере = {targetForce}");
         }
 
         [Client]
@@ -130,6 +160,7 @@ namespace Network.Synchronizers
 
                 torque = Vector3.ClampMagnitude(torque, maxForce);
                 rb.AddTorque(torque, ForceMode.Acceleration);
+                Debug.Log($"Применено вращение к {gameObject.name} в размере = {torque}");
             }
         }
 

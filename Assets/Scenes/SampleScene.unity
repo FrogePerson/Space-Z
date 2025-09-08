@@ -2316,9 +2316,12 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
-  positionForce: 10
-  rotationForce: 5
-  maxForce: 50
+  updateTime: 0.05
+  minUpdateDistance: 0.01
+  minUpdateRotation: 0.1
+  positionForce: 100
+  rotationForce: 100
+  maxForce: 200
   smoothTime: 0.1
 --- !u!1 &1192084151
 GameObject:
@@ -3274,6 +3277,9 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
+  updateTime: 0.05
+  minUpdateDistance: 0.01
+  minUpdateRotation: 0.1
   positionForce: 10
   rotationForce: 5
   maxForce: 50
@@ -4229,9 +4235,12 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
-  positionForce: 10
-  rotationForce: 5
-  maxForce: 50
+  updateTime: 0.05
+  minUpdateDistance: 0.01
+  minUpdateRotation: 0.1
+  positionForce: 100
+  rotationForce: 100
+  maxForce: 200
   smoothTime: 0.1
 --- !u!1 &1746519492
 GameObject:
@@ -4794,9 +4803,12 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
-  positionForce: 10
-  rotationForce: 5
-  maxForce: 50
+  updateTime: 0.05
+  minUpdateDistance: 0.01
+  minUpdateRotation: 0.1
+  positionForce: 100
+  rotationForce: 100
+  maxForce: 200
   smoothTime: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
