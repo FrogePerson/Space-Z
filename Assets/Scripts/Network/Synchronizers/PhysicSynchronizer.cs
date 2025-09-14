@@ -41,13 +41,15 @@ namespace Network.Synchronizers
 
         [Header("Силы синхронизации")]
         [SerializeField]
-        float positionForce = 10f;
+        float positionForce = 100f;
         [SerializeField]
-        float rotationForce = 5f;
+        float rotationForce = 100f;
         [SerializeField]
         float maxForce = 500f;
         [SerializeField]
         float smoothTime = 0.1f;
+        [SerializeField]
+        float gravityCompensation = 1.2f;
 
         Rigidbody rb;
         Vector3 positionError;
@@ -118,6 +120,7 @@ namespace Network.Synchronizers
             CalculateErrors();
             ApplyPositionCorrection();
             ApplyRotationCorrection();
+            ApplyGravityCompensation();
         }
 
         [Client]
@@ -157,6 +160,12 @@ namespace Network.Synchronizers
                 torque = Vector3.ClampMagnitude(torque, maxForce);
                 rb.AddTorque(torque, ForceMode.Acceleration);
             }
+        }
+
+        void ApplyGravityCompensation()
+        {
+            Vector3 gravityForce = Physics.gravity * gravityCompensation * rb.mass;
+            rb.AddForce(gravityForce, ForceMode.Force);
         }
 
         #endregion
