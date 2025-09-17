@@ -10,54 +10,65 @@ namespace Network.Synchronizers
     {
         [Header("Синхронизация")]
         [SerializeField]
-        bool SyncPosition = true;
+        protected bool SyncPosition = true;
         [SerializeField]
-        bool SyncRotation = true;
+        protected bool SyncRotation = true;
         [SerializeField]
-        bool SyncVelocity = true;
+        protected bool SyncVelocity = true;
         [SerializeField]
-        bool SyncAngularVelocity = true;
+        protected bool SyncAngularVelocity = true;
+
+        [System.Serializable]
+        protected struct Packed
+        {
+            
+            public Vector3 serverPosition;
+            
+            public Quaternion serverRotation;
+            
+            public Vector3 serverVelocity;
+            
+            public Vector3 serverAngularVelocity;
+        }
 
         [SyncVar]
-        Vector3 serverPosition;
-        [SyncVar]
-        Quaternion serverRotation;
-        [SyncVar]
-        Vector3 serverVelocity;
-        [SyncVar]
-        Vector3 serverAngularVelocity;
+        protected Packed packed;
+
+
+        //protected Vector3 serverPosition;
+        //protected Quaternion serverRotation;
+        //protected Vector3 serverVelocity;
+        //protected Vector3 serverAngularVelocity;
 
         [Header("Сетевые настройки")]
         [SerializeField]
-        float updateTime = 0.05f; //20 фпс, НЕ МЕНЯТЬ В RUN TIME!
+        protected float updateTime = 0.05f; //20 фпс, НЕ МЕНЯТЬ В RUN TIME!
         [SerializeField]
-        float minUpdateDistance = 0.001f;
+        protected float minUpdateDistance = 0.001f;
         [SerializeField]
-        float minUpdateRotation = 0.1f;
+        protected float minUpdateRotation = 0.1f;
 
-        Vector3 lastSendPosition;
-        Quaternion lastSendRotation;
+        protected Vector3 lastSendPosition;
+        protected Quaternion lastSendRotation;
 
 
         [Header("Силы синхронизации")]
         [SerializeField]
-        float positionForce = 100f;
+        protected float positionForce = 100f;
         [SerializeField]
-        float rotationForce = 100f;
+        protected float rotationForce = 100f;
         [SerializeField]
-        float maxForce = 500f;
+        protected float maxForce = 500f;
         [SerializeField]
-        float smoothTime = 0.1f;
+        protected float smoothTime = 0.1f;
         [SerializeField]
-        float gravityCompensation = 1.2f;
+        protected float gravityCompensation = 1.2f;
 
-        Rigidbody rb;
-        Vector3 positionError;
-        Quaternion rotationError;
-        Vector3 velocityBias;
-        Vector3 angularVelocityBias;
-
-        int counter = 0;
+        protected Rigidbody rb;
+        protected Vector3 positionError;
+        protected Quaternion rotationError;
+        protected Vector3 velocityBias;
+        protected Vector3 angularVelocityBias;
 
         #region Server
 
@@ -69,7 +80,7 @@ namespace Network.Synchronizers
         }
 
         [Server]
-        void ServerUpdatePositionState()
+        protected virtual void ServerUpdatePositionState()
         {
             float posDelta = Vector3.Distance(lastSendPosition, rb.position);
             float rotDelta = Quaternion.Angle(rb.rotation, lastSendRotation);
@@ -88,10 +99,16 @@ namespace Network.Synchronizers
             //    lastSendRotation = serverRotation;
             //}
 
-            serverPosition = rb.position;
-            serverRotation = rb.rotation;
-            serverVelocity = rb.linearVelocity;
-            serverAngularVelocity = rb.angularVelocity;
+            Packed newPacked = new Packed();
+
+            newPacked.serverPosition = rb.position;
+            newPacked.serverRotation = rb.rotation;
+            newPacked.serverVelocity = rb.linearVelocity;
+            newPacked.serverAngularVelocity = rb.angularVelocity;
+
+            packed = newPacked;
+
+
         }
 
         #endregion
@@ -124,16 +141,16 @@ namespace Network.Synchronizers
         }
 
         [Client]
-        void CalculateErrors()
+        protected virtual void CalculateErrors()
         {
-            positionError = serverPosition - rb.position;
+            positionError = packed.serverPosition - rb.position;
 
-            rotationError = serverRotation * Quaternion.Inverse(rb.rotation);
+            rotationError = packed.serverRotation * Quaternion.Inverse(rb.rotation);
             rotationError.ToAngleAxis(out float angle, out Vector3 axis);
             if (angle > 180f) angle -= 360f;
 
-            velocityBias = serverVelocity - rb.linearVelocity;
-            angularVelocityBias = serverAngularVelocity - rb.angularVelocity;
+            velocityBias = packed.serverVelocity - rb.linearVelocity;
+            angularVelocityBias = packed.serverAngularVelocity - rb.angularVelocity;
         }
 
         [Client]
