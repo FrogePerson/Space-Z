@@ -1,10 +1,12 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
 namespace Network.Synchronizers
 {
-    public class DeltaPhysicSynchronizer : PhysicSynchronizer
+    [Obsolete("Не работает! Используйте PhysicSynchronizer или другие синхронизаторы!", true)]
+    public class DeltaPhysicSynchronizer : PhysicSynchronizer 
     {
 
         private struct PrivatePacked
@@ -27,96 +29,100 @@ namespace Network.Synchronizers
         }
 
         [SyncVar]
-        PrivatePacked _packed;
+        PrivatePacked shortPacked;
 
-        [SerializeField]
-        Vector3 lastPosition = Vector3.zero;
-        [SerializeField]
-        Vector3 lastVelocity = Vector3.zero;
-        [SerializeField]
-        Vector3 lastRotation = Vector3.zero;
-        [SerializeField]
-        Vector3 lastAngularVelocity = Vector3.zero;
+        bool FlagFirstSendTime = false;
+
+        [SyncVar]
+        bool sendAllData = false;
 
         void Start()
         {
-            lastPosition = rb.position;
-            lastVelocity = rb.linearVelocity;
-            lastRotation = rb.rotation.eulerAngles;
-            lastAngularVelocity = rb.angularVelocity;
+
         }
 
         [Server]
         protected override void ServerUpdatePositionState()
         {
-            if (!SendData())
+            if (FlagFirstSendTime == false)
+            {
+                base.ServerUpdatePositionState();
+                sendAllData = true;
+                FlagFirstSendTime = true;
+
+                Debug.Log("Отправлены все данные");
+            }
+            else if (!SendData())
             {
                 base.ServerUpdatePositionState();
 
                 Debug.Log($"НЕ смогли отправить дельта позиции для объекта {gameObject.name}");
-
-                lastPosition = rb.position;
-                lastVelocity = rb.linearVelocity;
-                lastRotation = rb.rotation.eulerAngles;
-                lastAngularVelocity = rb.angularVelocity;
+                sendAllData = true;
             }
         }
 
+        [Server]
         bool SendData()
         {
+            Debug.Log($"SERVER: {rb.position}");
+
+            if(sendAllData) sendAllData = false;
+
             PrivatePacked newPacked = new PrivatePacked();
 
-            var tmp = rb.position.x - lastPosition.x;
-            if (TrySendData(tmp, newPacked.deltaServerPositionX) == false) return false;
+            var tmp = rb.position.x - bigPacked.serverPosition.x;
+            if (TrySendData(tmp, ref newPacked.deltaServerPositionX) == false) return false;
 
-            tmp = rb.position.y - lastPosition.y;
-            if (TrySendData(tmp, newPacked.deltaServerPositionY) == false) return false;
-
-
-            tmp = rb.position.z - lastPosition.z;
-            if (TrySendData(tmp, newPacked.deltaServerPositionZ) == false) return false;
-
-            lastPosition = rb.position;
+            tmp = rb.position.y - bigPacked.serverPosition.y;
+            if (TrySendData(tmp, ref newPacked.deltaServerPositionY) == false) return false;
 
 
-            tmp = rb.linearVelocity.x - lastVelocity.x;
-            if (TrySendData(tmp, newPacked.deltaServerVelocityX) == false) return false;
+            tmp = rb.position.z - bigPacked.serverPosition.z;
+            if (TrySendData(tmp, ref newPacked.deltaServerPositionZ) == false) return false;
 
-            tmp = rb.linearVelocity.y - lastVelocity.y;
-            if (TrySendData(tmp, newPacked.deltaServerVelocityY) == false) return false;
-
-            tmp = rb.linearVelocity.z - lastVelocity.z;
-            if (TrySendData(tmp, newPacked.deltaServerVelocityZ) == false) return false;
-
-            lastVelocity = rb.linearVelocity;
+            //lastPosition = rb.position;
 
 
-            tmp = rb.rotation.x - lastRotation.x;
-            if (TrySendData(tmp, newPacked.deltaServerRotationX) == false) return false;
+            tmp = rb.linearVelocity.x - bigPacked.serverVelocity.x;
+            if (TrySendData(tmp, ref newPacked.deltaServerVelocityX) == false) return false;
 
-            tmp = rb.rotation.y - lastRotation.y;
-            if (TrySendData(tmp, newPacked.deltaServerRotationY) == false) return false;
+            tmp = rb.linearVelocity.y - bigPacked.serverVelocity.y;
+            if (TrySendData(tmp, ref newPacked.deltaServerVelocityY) == false) return false;
 
-            tmp = rb.rotation.z - lastRotation.z;
-            if (TrySendData(tmp, newPacked.deltaServerRotationZ) == false) return false;
+            tmp = rb.linearVelocity.z - bigPacked.serverVelocity.z;
+            if (TrySendData(tmp, ref newPacked.deltaServerVelocityZ) == false) return false;
 
-            lastRotation = rb.rotation.eulerAngles;
-
-
-            tmp = rb.angularVelocity.x - lastAngularVelocity.x;
-            if (TrySendData(tmp, newPacked.deltaServerAngularVelocityX) == false) return false;
-
-            tmp = rb.angularVelocity.y - lastAngularVelocity.y;
-            if (TrySendData(tmp, newPacked.deltaServerAngularVelocityY) == false) return false;
-
-            tmp = rb.angularVelocity.z - lastAngularVelocity.z;
-            if (TrySendData(tmp, newPacked.deltaServerAngularVelocityZ) == false) return false;
-
-            lastAngularVelocity = rb.angularVelocity;
+            //lastVelocity = rb.linearVelocity;
 
 
+            tmp = rb.rotation.x - bigPacked.serverRotation.x;
+            if (TrySendData(tmp, ref newPacked.deltaServerRotationX) == false) return false;
 
-            _packed = newPacked;
+            tmp = rb.rotation.y - bigPacked.serverRotation.y;
+            if (TrySendData(tmp, ref newPacked.deltaServerRotationY) == false) return false;
+
+            tmp = rb.rotation.z - bigPacked.serverRotation.z;
+            if (TrySendData(tmp, ref newPacked.deltaServerRotationZ) == false) return false;
+
+            //lastRotation = rb.rotation.eulerAngles;
+
+
+            tmp = rb.angularVelocity.x - bigPacked.serverAngularVelocity.x;
+            if (TrySendData(tmp, ref newPacked.deltaServerAngularVelocityX) == false) return false;
+
+            tmp = rb.angularVelocity.y - bigPacked.serverAngularVelocity.y;
+            if (TrySendData(tmp, ref newPacked.deltaServerAngularVelocityY) == false) return false;
+
+            tmp = rb.angularVelocity.z - bigPacked.serverAngularVelocity.z;
+            if (TrySendData(tmp, ref newPacked.deltaServerAngularVelocityZ) == false) return false;
+
+            //lastAngularVelocity = rb.angularVelocity;
+
+            if(newPacked.deltaServerPositionX == 0 && newPacked.deltaServerPositionY == 0 && newPacked.deltaServerPositionZ == 0)
+            {
+                return true;
+            }
+            shortPacked = newPacked;
             return true;
         }
 
@@ -130,7 +136,7 @@ namespace Network.Synchronizers
             return true;
         }
 
-        bool TrySendData(float x, short sender)
+        bool TrySendData(float x, ref short sender)
         {
             x *= 100;
             x = Mathf.Round(x);
@@ -149,41 +155,45 @@ namespace Network.Synchronizers
         [Client]
         protected override void CalculateErrors()
         {
+            if(sendAllData)
+            {
+                base.CalculateErrors();
+                return;
+            }
+
             Vector3 tmp = new Vector3();
-            tmp.x = _packed.deltaServerPositionX / 100;
-            tmp.y = _packed.deltaServerPositionY / 100;
-            tmp.z = _packed.deltaServerPositionZ / 100;
+            tmp.x = shortPacked.deltaServerPositionX / 100;
+            tmp.y = shortPacked.deltaServerPositionY / 100;
+            tmp.z = shortPacked.deltaServerPositionZ / 100;
 
-            positionError = lastPosition + tmp - rb.position;
-            lastPosition = tmp;
+            positionError = (bigPacked.serverPosition + tmp) - rb.position;
 
-            tmp.x = _packed.deltaServerRotationX / 100;
-            tmp.y = _packed.deltaServerRotationY / 100;
-            tmp.z = _packed.deltaServerRotationZ / 100;
+            Debug.Log($"bigPacked.serverPosition = {bigPacked.serverPosition} + tmp = {tmp} = {bigPacked.serverPosition + tmp}");
+
+
+            tmp.x = shortPacked.deltaServerRotationX / 100;
+            tmp.y = shortPacked.deltaServerRotationY / 100;
+            tmp.z = shortPacked.deltaServerRotationZ / 100;
 
             Quaternion tmpQuat = Quaternion.Euler(tmp.x, tmp.y, tmp.z);
-            Quaternion lastTmpQuat = Quaternion.Euler(lastRotation.x, lastRotation.y, lastRotation.z);
+            Quaternion lastTmpQuat = bigPacked.serverRotation;
 
-            rotationError = tmpQuat * Quaternion.Inverse(rb.rotation);
+            rotationError = (lastTmpQuat * tmpQuat) * Quaternion.Inverse(rb.rotation);
             rotationError.ToAngleAxis(out float angle, out Vector3 axis);
             if (angle > 180f) angle -= 360f;
 
-            lastRotation = tmpQuat.eulerAngles;
 
+            tmp.x = shortPacked.deltaServerVelocityX / 100;
+            tmp.y = shortPacked.deltaServerVelocityY / 100;
+            tmp.z = shortPacked.deltaServerVelocityZ / 100;
 
-            tmp.x = _packed.deltaServerVelocityX / 100;
-            tmp.y = _packed.deltaServerVelocityY / 100;
-            tmp.z = _packed.deltaServerVelocityZ / 100;
+            velocityBias = (bigPacked.serverVelocity + tmp) - rb.linearVelocity;
 
-            velocityBias =lastVelocity + tmp - rb.linearVelocity;
-            lastVelocity = tmp;
+            tmp.x = shortPacked.deltaServerAngularVelocityX / 100;
+            tmp.y = shortPacked.deltaServerAngularVelocityY / 100;
+            tmp.z = shortPacked.deltaServerAngularVelocityZ / 100;
 
-            tmp.x = _packed.deltaServerAngularVelocityX / 100;
-            tmp.y = _packed.deltaServerAngularVelocityY / 100;
-            tmp.z = _packed.deltaServerAngularVelocityZ / 100;
-
-            angularVelocityBias =lastAngularVelocity + tmp - rb.angularVelocity;
-            lastAngularVelocity = tmp;
+            angularVelocityBias = (bigPacked.serverAngularVelocity + tmp) - rb.angularVelocity;
         }
     }
 }

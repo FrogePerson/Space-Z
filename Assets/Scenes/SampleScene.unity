@@ -1251,7 +1251,6 @@ GameObject:
   - component: {fileID: 588586690}
   - component: {fileID: 588586689}
   - component: {fileID: 588586688}
-  - component: {fileID: 588586693}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -1392,37 +1391,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588586685}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &588586693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 588586685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8df21d8942cad4f46a8132c790dd250e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  SyncPosition: 1
-  SyncRotation: 1
-  SyncVelocity: 1
-  SyncAngularVelocity: 1
-  updateTime: 0.05
-  minUpdateDistance: 0.001
-  minUpdateRotation: 0.1
-  positionForce: 100
-  rotationForce: 100
-  maxForce: 500
-  smoothTime: 0.1
-  gravityCompensation: 1.2
-  lastPosition: {x: 0, y: 0, z: 0}
-  lastVelocity: {x: 0, y: 0, z: 0}
-  lastRotation: {x: 0, y: 0, z: 0}
-  lastAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!1 &702254545
 GameObject:
   m_ObjectHideFlags: 0
@@ -1560,7 +1528,6 @@ GameObject:
   - component: {fileID: 737721347}
   - component: {fileID: 737721346}
   - component: {fileID: 737721345}
-  - component: {fileID: 737721351}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -1701,37 +1668,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 416947222}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &737721351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 737721343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8df21d8942cad4f46a8132c790dd250e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  SyncPosition: 1
-  SyncRotation: 1
-  SyncVelocity: 1
-  SyncAngularVelocity: 1
-  updateTime: 0.05
-  minUpdateDistance: 0.001
-  minUpdateRotation: 0.1
-  positionForce: 100
-  rotationForce: 100
-  maxForce: 500
-  smoothTime: 0.1
-  gravityCompensation: 1.2
-  lastPosition: {x: 0, y: 0, z: 0}
-  lastVelocity: {x: 0, y: 0, z: 0}
-  lastRotation: {x: 0, y: 0, z: 0}
-  lastAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!1 &766001315
 GameObject:
   m_ObjectHideFlags: 0
@@ -2003,7 +1939,6 @@ GameObject:
   - component: {fileID: 855234268}
   - component: {fileID: 855234267}
   - component: {fileID: 855234266}
-  - component: {fileID: 855234271}
   m_Layer: 0
   m_Name: Sphere (1)
   m_TagString: Untagged
@@ -2144,37 +2079,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 855234263}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &855234271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 855234263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8df21d8942cad4f46a8132c790dd250e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  SyncPosition: 1
-  SyncRotation: 1
-  SyncVelocity: 1
-  SyncAngularVelocity: 1
-  updateTime: 0.05
-  minUpdateDistance: 0.001
-  minUpdateRotation: 0.1
-  positionForce: 100
-  rotationForce: 100
-  maxForce: 500
-  smoothTime: 0.1
-  gravityCompensation: 1.2
-  lastPosition: {x: 0, y: 0, z: 0}
-  lastVelocity: {x: 0, y: 0, z: 0}
-  lastRotation: {x: 0, y: 0, z: 0}
-  lastAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!1 &869363087
 GameObject:
   m_ObjectHideFlags: 0
@@ -3399,7 +3303,6 @@ GameObject:
   - component: {fileID: 1498234372}
   - component: {fileID: 1498234371}
   - component: {fileID: 1498234376}
-  - component: {fileID: 1498234377}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -3540,37 +3443,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &1498234377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1498234369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8df21d8942cad4f46a8132c790dd250e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  SyncPosition: 1
-  SyncRotation: 1
-  SyncVelocity: 1
-  SyncAngularVelocity: 1
-  updateTime: 0.05
-  minUpdateDistance: 0.001
-  minUpdateRotation: 0.1
-  positionForce: 100
-  rotationForce: 100
-  maxForce: 500
-  smoothTime: 0.1
-  gravityCompensation: 1.2
-  lastPosition: {x: 0, y: 0, z: 0}
-  lastVelocity: {x: 0, y: 0, z: 0}
-  lastRotation: {x: 0, y: 0, z: 0}
-  lastAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!1001 &1516297505
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -32,7 +32,7 @@ namespace Network.Synchronizers
         }
 
         [SyncVar]
-        protected Packed packed;
+        protected Packed bigPacked;
 
 
         //protected Vector3 serverPosition;
@@ -106,7 +106,7 @@ namespace Network.Synchronizers
             newPacked.serverVelocity = rb.linearVelocity;
             newPacked.serverAngularVelocity = rb.angularVelocity;
 
-            packed = newPacked;
+            bigPacked = newPacked;
 
 
         }
@@ -143,14 +143,14 @@ namespace Network.Synchronizers
         [Client]
         protected virtual void CalculateErrors()
         {
-            positionError = packed.serverPosition - rb.position;
+            positionError = bigPacked.serverPosition - rb.position;
 
-            rotationError = packed.serverRotation * Quaternion.Inverse(rb.rotation);
+            rotationError = bigPacked.serverRotation * Quaternion.Inverse(rb.rotation);
             rotationError.ToAngleAxis(out float angle, out Vector3 axis);
             if (angle > 180f) angle -= 360f;
 
-            velocityBias = packed.serverVelocity - rb.linearVelocity;
-            angularVelocityBias = packed.serverAngularVelocity - rb.angularVelocity;
+            velocityBias = bigPacked.serverVelocity - rb.linearVelocity;
+            angularVelocityBias = bigPacked.serverAngularVelocity - rb.angularVelocity;
         }
 
         [Client]
