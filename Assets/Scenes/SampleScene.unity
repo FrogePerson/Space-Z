@@ -383,7 +383,7 @@ Transform:
   m_GameObject: {fileID: 291172308}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -1.42, y: -0.34, z: 1.07}
+  m_LocalPosition: {x: -0.74, y: -0.34, z: 1.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -410,6 +410,7 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
+  Extrapolation: 0
   updateTime: 0.05
   minUpdateDistance: 0.001
   minUpdateRotation: 0.1
@@ -535,6 +536,7 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
+  Extrapolation: 0
   updateTime: 0.05
   minUpdateDistance: 0.001
   minUpdateRotation: 0.1
@@ -790,7 +792,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   networkObj: {fileID: 737721343}
-  _breakForce: 30
+  _breakForce: 15
   contacts: 0
   joints: []
 --- !u!4 &416947222
@@ -1251,6 +1253,7 @@ GameObject:
   - component: {fileID: 588586690}
   - component: {fileID: 588586689}
   - component: {fileID: 588586688}
+  - component: {fileID: 588586693}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -1391,6 +1394,34 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588586685}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &588586693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588586685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68056530cbc0b084e80efb3bdedd0dde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  SyncPosition: 1
+  SyncRotation: 1
+  SyncVelocity: 1
+  SyncAngularVelocity: 1
+  Extrapolation: 1
+  updateTime: 0.5
+  minUpdateDistance: 0.1
+  minUpdateRotation: 0.1
+  positionForce: 100
+  rotationForce: 100
+  maxForce: 500
+  smoothTime: 0.1
+  gravityCompensation: 1.2
 --- !u!1 &702254545
 GameObject:
   m_ObjectHideFlags: 0
@@ -1528,6 +1559,7 @@ GameObject:
   - component: {fileID: 737721347}
   - component: {fileID: 737721346}
   - component: {fileID: 737721345}
+  - component: {fileID: 737721351}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -1668,6 +1700,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 416947222}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &737721351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737721343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68056530cbc0b084e80efb3bdedd0dde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  SyncPosition: 1
+  SyncRotation: 1
+  SyncVelocity: 1
+  SyncAngularVelocity: 1
+  Extrapolation: 1
+  updateTime: 0.5
+  minUpdateDistance: 0.1
+  minUpdateRotation: 0.1
+  positionForce: 100
+  rotationForce: 100
+  maxForce: 500
+  smoothTime: 0.1
+  gravityCompensation: 1.2
 --- !u!1 &766001315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1939,6 +1999,7 @@ GameObject:
   - component: {fileID: 855234268}
   - component: {fileID: 855234267}
   - component: {fileID: 855234266}
+  - component: {fileID: 855234271}
   m_Layer: 0
   m_Name: Sphere (1)
   m_TagString: Untagged
@@ -2079,6 +2140,34 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 855234263}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &855234271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855234263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68056530cbc0b084e80efb3bdedd0dde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  SyncPosition: 1
+  SyncRotation: 1
+  SyncVelocity: 1
+  SyncAngularVelocity: 1
+  Extrapolation: 1
+  updateTime: 0.5
+  minUpdateDistance: 0.1
+  minUpdateRotation: 0.1
+  positionForce: 100
+  rotationForce: 100
+  maxForce: 500
+  smoothTime: 0.1
+  gravityCompensation: 1.2
 --- !u!1 &869363087
 GameObject:
   m_ObjectHideFlags: 0
@@ -2469,8 +2558,9 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
+  Extrapolation: 0
   updateTime: 0.05
-  minUpdateDistance: 0.001
+  minUpdateDistance: 0.1
   minUpdateRotation: 0.1
   positionForce: 100
   rotationForce: 100
@@ -2527,7 +2617,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   networkObj: {fileID: 588586685}
-  _breakForce: 30
+  _breakForce: 15
   contacts: 0
   joints:
   - {fileID: 416947221}
@@ -3303,6 +3393,7 @@ GameObject:
   - component: {fileID: 1498234372}
   - component: {fileID: 1498234371}
   - component: {fileID: 1498234376}
+  - component: {fileID: 1498234377}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -3319,7 +3410,7 @@ Transform:
   m_GameObject: {fileID: 1498234369}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.41, y: 5.72, z: 0}
+  m_LocalPosition: {x: 5.87, y: -0.44, z: 0.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3443,6 +3534,23 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &1498234377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498234369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb8e5add600e40e47a034ef322d577f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  IsUsingSmallPacket: 0
+  updateTime: 0.05
 --- !u!1001 &1516297505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4269,8 +4377,9 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
+  Extrapolation: 0
   updateTime: 0.05
-  minUpdateDistance: 0.001
+  minUpdateDistance: 0.1
   minUpdateRotation: 0.1
   positionForce: 100
   rotationForce: 100
@@ -4558,7 +4667,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   networkObj: {fileID: 855234263}
-  _breakForce: 30
+  _breakForce: 15
   contacts: 0
   joints:
   - {fileID: 416947221}
@@ -4576,6 +4685,7 @@ GameObject:
   - component: {fileID: 2023847871}
   - component: {fileID: 2023847870}
   - component: {fileID: 2023847869}
+  - component: {fileID: 2023847874}
   m_Layer: 0
   m_Name: Sphere (1)
   m_TagString: Untagged
@@ -4716,6 +4826,40 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023847867}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2023847874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023847867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 2023847868}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
 --- !u!1 &2127386393
 GameObject:
   m_ObjectHideFlags: 0
@@ -4936,8 +5080,9 @@ MonoBehaviour:
   SyncRotation: 1
   SyncVelocity: 1
   SyncAngularVelocity: 1
+  Extrapolation: 0
   updateTime: 0.05
-  minUpdateDistance: 0.001
+  minUpdateDistance: 0.1
   minUpdateRotation: 0.1
   positionForce: 100
   rotationForce: 100

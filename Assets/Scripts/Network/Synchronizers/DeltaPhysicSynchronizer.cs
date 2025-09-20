@@ -70,50 +70,50 @@ namespace Network.Synchronizers
 
             PrivatePacked newPacked = new PrivatePacked();
 
-            var tmp = rb.position.x - bigPacked.serverPosition.x;
+            var tmp = rb.position.x - packed.serverPosition.x;
             if (TrySendData(tmp, ref newPacked.deltaServerPositionX) == false) return false;
 
-            tmp = rb.position.y - bigPacked.serverPosition.y;
+            tmp = rb.position.y - packed.serverPosition.y;
             if (TrySendData(tmp, ref newPacked.deltaServerPositionY) == false) return false;
 
 
-            tmp = rb.position.z - bigPacked.serverPosition.z;
+            tmp = rb.position.z - packed.serverPosition.z;
             if (TrySendData(tmp, ref newPacked.deltaServerPositionZ) == false) return false;
 
             //lastPosition = rb.position;
 
 
-            tmp = rb.linearVelocity.x - bigPacked.serverVelocity.x;
+            tmp = rb.linearVelocity.x - packed.serverVelocity.x;
             if (TrySendData(tmp, ref newPacked.deltaServerVelocityX) == false) return false;
 
-            tmp = rb.linearVelocity.y - bigPacked.serverVelocity.y;
+            tmp = rb.linearVelocity.y - packed.serverVelocity.y;
             if (TrySendData(tmp, ref newPacked.deltaServerVelocityY) == false) return false;
 
-            tmp = rb.linearVelocity.z - bigPacked.serverVelocity.z;
+            tmp = rb.linearVelocity.z - packed.serverVelocity.z;
             if (TrySendData(tmp, ref newPacked.deltaServerVelocityZ) == false) return false;
 
             //lastVelocity = rb.linearVelocity;
 
 
-            tmp = rb.rotation.x - bigPacked.serverRotation.x;
+            tmp = rb.rotation.x - packed.serverRotation.x;
             if (TrySendData(tmp, ref newPacked.deltaServerRotationX) == false) return false;
 
-            tmp = rb.rotation.y - bigPacked.serverRotation.y;
+            tmp = rb.rotation.y - packed.serverRotation.y;
             if (TrySendData(tmp, ref newPacked.deltaServerRotationY) == false) return false;
 
-            tmp = rb.rotation.z - bigPacked.serverRotation.z;
+            tmp = rb.rotation.z - packed.serverRotation.z;
             if (TrySendData(tmp, ref newPacked.deltaServerRotationZ) == false) return false;
 
             //lastRotation = rb.rotation.eulerAngles;
 
 
-            tmp = rb.angularVelocity.x - bigPacked.serverAngularVelocity.x;
+            tmp = rb.angularVelocity.x - packed.serverAngularVelocity.x;
             if (TrySendData(tmp, ref newPacked.deltaServerAngularVelocityX) == false) return false;
 
-            tmp = rb.angularVelocity.y - bigPacked.serverAngularVelocity.y;
+            tmp = rb.angularVelocity.y - packed.serverAngularVelocity.y;
             if (TrySendData(tmp, ref newPacked.deltaServerAngularVelocityY) == false) return false;
 
-            tmp = rb.angularVelocity.z - bigPacked.serverAngularVelocity.z;
+            tmp = rb.angularVelocity.z - packed.serverAngularVelocity.z;
             if (TrySendData(tmp, ref newPacked.deltaServerAngularVelocityZ) == false) return false;
 
             //lastAngularVelocity = rb.angularVelocity;
@@ -166,9 +166,9 @@ namespace Network.Synchronizers
             tmp.y = shortPacked.deltaServerPositionY / 100;
             tmp.z = shortPacked.deltaServerPositionZ / 100;
 
-            positionError = (bigPacked.serverPosition + tmp) - rb.position;
+            positionError = (packed.serverPosition + tmp) - rb.position;
 
-            Debug.Log($"bigPacked.serverPosition = {bigPacked.serverPosition} + tmp = {tmp} = {bigPacked.serverPosition + tmp}");
+            Debug.Log($"bigPacked.serverPosition = {packed.serverPosition} + tmp = {tmp} = {packed.serverPosition + tmp}");
 
 
             tmp.x = shortPacked.deltaServerRotationX / 100;
@@ -176,7 +176,7 @@ namespace Network.Synchronizers
             tmp.z = shortPacked.deltaServerRotationZ / 100;
 
             Quaternion tmpQuat = Quaternion.Euler(tmp.x, tmp.y, tmp.z);
-            Quaternion lastTmpQuat = bigPacked.serverRotation;
+            Quaternion lastTmpQuat = packed.serverRotation;
 
             rotationError = (lastTmpQuat * tmpQuat) * Quaternion.Inverse(rb.rotation);
             rotationError.ToAngleAxis(out float angle, out Vector3 axis);
@@ -187,13 +187,13 @@ namespace Network.Synchronizers
             tmp.y = shortPacked.deltaServerVelocityY / 100;
             tmp.z = shortPacked.deltaServerVelocityZ / 100;
 
-            velocityBias = (bigPacked.serverVelocity + tmp) - rb.linearVelocity;
+            velocityBias = (packed.serverVelocity + tmp) - rb.linearVelocity;
 
             tmp.x = shortPacked.deltaServerAngularVelocityX / 100;
             tmp.y = shortPacked.deltaServerAngularVelocityY / 100;
             tmp.z = shortPacked.deltaServerAngularVelocityZ / 100;
 
-            angularVelocityBias = (bigPacked.serverAngularVelocity + tmp) - rb.angularVelocity;
+            angularVelocityBias = (packed.serverAngularVelocity + tmp) - rb.angularVelocity;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Player.PlayerLamp
 
         void OnLampChanged(bool oldValue, bool newValue )
         {
-            if(player != null) return;
+            if(player != null) return;//?
             if (newValue) Log4NetLogger.Log($"Фонарь игрока с id = {player.ConnId}, включен", log);
             else Log4NetLogger.Log($"Фонарь игрока с id = {player.ConnId}, выключен", log);
         }

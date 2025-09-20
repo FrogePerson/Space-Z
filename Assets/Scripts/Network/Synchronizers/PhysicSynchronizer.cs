@@ -2,11 +2,12 @@
 using UnityEngine;
 using Mirror;
 using System;
+using Interfaces;
 
 namespace Network.Synchronizers
 {
     [RequireComponent(typeof(Rigidbody), typeof(NetworkIdentity))]
-    public class PhysicSynchronizer : NetworkBehaviour
+    public class PhysicSynchronizer : NetworkBehaviour, ISyncPosition
     {
         [Header("Синхронизация")]
         [SerializeField]
@@ -32,7 +33,7 @@ namespace Network.Synchronizers
         }
 
         [SyncVar]
-        protected Packed bigPacked;
+        protected Packed packed;
 
 
         //protected Vector3 serverPosition;
@@ -42,9 +43,11 @@ namespace Network.Synchronizers
 
         [Header("Сетевые настройки")]
         [SerializeField]
-        protected float updateTime = 0.05f; //20 фпс, НЕ МЕНЯТЬ В RUN TIME!
+        protected bool Extrapolation = false;
         [SerializeField]
-        protected float minUpdateDistance = 0.001f;
+        protected float updateTime = 0.05f; //20 фпс, НЕ МЕНЯТЬ В RUN TIME
+        [SerializeField]
+        protected float minUpdateDistance = 0.1f;
         [SerializeField]
         protected float minUpdateRotation = 0.1f;
 
@@ -82,39 +85,47 @@ namespace Network.Synchronizers
         [Server]
         protected virtual void ServerUpdatePositionState()
         {
-            float posDelta = Vector3.Distance(lastSendPosition, rb.position);
-            float rotDelta = Quaternion.Angle(rb.rotation, lastSendRotation);
+            float posDelta = Vector3.Distance(packed.serverPosition, rb.position);
+            float rotDelta = Quaternion.Angle(packed.serverRotation, rb.rotation);
 
-            //if (posDelta > minUpdateDistance)
-            //{
-            //    serverPosition = rb.position;
-            //    serverVelocity = rb.linearVelocity;
-            //    lastSendPosition = serverPosition;
-            //}
+            if(posDelta > minUpdateDistance || rotDelta > minUpdateDistance)
+            {
+                Packed newPacked = new Packed();
+                if (Extrapolation)
+                {
+                    newPacked.serverPosition = rb.position + rb.linearVelocity * updateTime;
 
-            //if (rotDelta > minUpdateRotation)
-            //{
-            //    serverRotation = rb.rotation;
-            //    serverAngularVelocity = rb.angularVelocity;
-            //    lastSendRotation = serverRotation;
-            //}
+                    Vector3 angularDisplacementVector = rb.angularVelocity * updateTime;
+                    Quaternion angularDisplacementQuaternion = Quaternion.Euler(angularDisplacementVector);
 
-            Packed newPacked = new Packed();
+                    newPacked.serverRotation = rb.rotation * angularDisplacementQuaternion;
+                    newPacked.serverVelocity = rb.linearVelocity;
+                    newPacked.serverAngularVelocity = rb.angularVelocity;
 
-            newPacked.serverPosition = rb.position;
-            newPacked.serverRotation = rb.rotation;
-            newPacked.serverVelocity = rb.linearVelocity;
-            newPacked.serverAngularVelocity = rb.angularVelocity;
+                    packed = newPacked;
+                    return;
+                }
+                
+                newPacked.serverPosition = rb.position;
+                newPacked.serverRotation = rb.rotation;
+                newPacked.serverVelocity = rb.linearVelocity;
+                newPacked.serverAngularVelocity = rb.angularVelocity;
 
-            bigPacked = newPacked;
-
-
+                packed = newPacked;
+            }
         }
 
         #endregion
 
         #region Client RPCs
 
+        public void EMERGENCY_SYNC(Vector3 position, Vector3 rotation)
+        {
+            rb.position = position;
+
+            Quaternion rotationQuaternion = Quaternion.Euler(rotation);
+            rb.rotation = rotationQuaternion;
+        }
 
         #endregion
 
@@ -123,6 +134,7 @@ namespace Network.Synchronizers
         [ClientCallback]
         void FixedUpdate()
         {
+            if(isServer) return;
             ApplyForces();
         }
 
@@ -143,14 +155,14 @@ namespace Network.Synchronizers
         [Client]
         protected virtual void CalculateErrors()
         {
-            positionError = bigPacked.serverPosition - rb.position;
+            positionError = packed.serverPosition - rb.position;
 
-            rotationError = bigPacked.serverRotation * Quaternion.Inverse(rb.rotation);
+            rotationError = packed.serverRotation * Quaternion.Inverse(rb.rotation);
             rotationError.ToAngleAxis(out float angle, out Vector3 axis);
             if (angle > 180f) angle -= 360f;
 
-            velocityBias = bigPacked.serverVelocity - rb.linearVelocity;
-            angularVelocityBias = bigPacked.serverAngularVelocity - rb.angularVelocity;
+            velocityBias = packed.serverVelocity - rb.linearVelocity;
+            angularVelocityBias = packed.serverAngularVelocity - rb.angularVelocity;
         }
 
         [Client]
