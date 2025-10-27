@@ -1,8 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
-using Interfaces;
-using System;
+﻿using Interfaces;
 using Mirror;
+using System;
+using System.Collections;
+using TMPro;
+using Unity.Mathematics;
+using UnityEngine;
 
 namespace Network.Synchronizers
 {
@@ -10,29 +12,29 @@ namespace Network.Synchronizers
     {
         struct SmallPacked
         {
-            public byte serverPosX;
-            public byte serverPosY;
-            public byte serverPosZ;
+            public short serverPosX;
+            public short serverPosY;
+            public short serverPosZ;
 
-            public byte serverRotY;
+            public short serverRotY;
         }
 
         struct Packed
         {
-            public byte serverPosX;
-            public byte serverPosY;
-            public byte serverPosZ;
+            public short serverPosX;
+            public short serverPosY;
+            public short serverPosZ;
 
-            public byte serverRotX;
-            public byte serverRotY;
-            public byte serverRotZ;
+            public short serverRotX;
+            public short serverRotY;
+            public short serverRotZ;
         }
 
         struct FullPacked
         {
             public Vector3 serverPosition;
 
-            public Vector3 serverRotation;
+            public Quaternion serverRotation;
         }
 
         
@@ -41,11 +43,13 @@ namespace Network.Synchronizers
         SmallPacked smallPacked;
         [SyncVar]
         Packed packed;
-        [SyncVar(hook = nameof(applyFullPocked))]
-        FullPacked fullPacked;
+        //[SyncVar(hook = nameof(applyFullPocked))]
+        //FullPacked fullPacked;
 
+        [SerializeField]
+        [SyncVar]
         Vector3 lastSendedPosition = Vector3.zero;
-        Vector3 lastSendedRotation = Vector3.zero;
+        Quaternion lastSendedRotation = Quaternion.identity;
 
         bool IsSendAll = false;
 
@@ -53,7 +57,12 @@ namespace Network.Synchronizers
         [SerializeField]
         bool IsUsingSmallPacket = false;
         [SerializeField]
+        float minDistanceToSend = 0.01f;
+        [SerializeField]
         float updateTime = 0.05f;
+
+        Vector3 newPos = Vector3.zero;
+        float interpolationSpeed = 2f;
 
         #region Server
 
@@ -64,94 +73,115 @@ namespace Network.Synchronizers
             InvokeRepeating(nameof(ServerUpdatePositionState), 0f, updateTime);
 
             lastSendedPosition = transform.position;
+            lastSendedRotation = transform.rotation;
         }
 
         [Server]
         void ServerUpdatePositionState()
         {
-            //float posDelta = Vector3.Distance(packed.serverPosition, rb.position);
-            //float rotDelta = Quaternion.Angle(packed.serverRotation, rb.rotation); 
-            // оптимизация, эт на потом)
+            Vector3 posDistance = transform.position - lastSendedPosition;
+            //Vector3 rotDistance = transform.rotation - lastSendedRotation;
 
-            if (IsUsingSmallPacket)
+            if(posDistance.magnitude < minDistanceToSend) return;
+
+            bool IsNeedSendFullPacked = false;
+
+            if(math.abs(posDistance.x) > 327.68) IsNeedSendFullPacked = true;
+            if (math.abs(posDistance.y) > 327.68) IsNeedSendFullPacked = true;
+            if (math.abs(posDistance.z) > 327.68) IsNeedSendFullPacked = true;
+
+            if (IsNeedSendFullPacked)
             {
-                // не юзай пока
+                sendFullPacked();
+                Debug.Log("Отправили FullPacked!!");
+                return;
             }
-            else
-            {
-                Packed newPacked = new Packed();
 
-                Vector3 tmp;
+            Packed newPacked = new Packed();
 
-                IsSendAll = false;
+            newPacked.serverPosX = ConvertToShort(posDistance.x);
+            newPacked.serverPosY = ConvertToShort(posDistance.y);
+            newPacked.serverPosZ = ConvertToShort(posDistance.z);
 
-                byte result = 0;
-
-                tmp = lastSendedPosition - transform.position;
-                if (ConvertToByte(tmp.x, ref result)) newPacked.serverPosX = result;
-
-                tmp = lastSendedPosition - transform.position;
-                if (ConvertToByte(tmp.y, ref result)) newPacked.serverPosY = result;
-
-                tmp = lastSendedPosition - transform.position;
-                if (ConvertToByte(tmp.z, ref result)) newPacked.serverPosZ = result;
-
-                if (IsSendAll)
-                {
-                    Debug.Log($"ByteSync: отправили FullPacked");
-                    sendFullPacked();
-                    return;
-                }
-                Debug.Log($"ByteSync: {newPacked.serverPosX}, {newPacked.serverPosY}, {newPacked.serverPosZ}");
-            }
+            packed = newPacked;
+            //Debug.Log($"{packed.serverPosX}, {packed.serverRotY}");
         }
 
         void sendFullPacked()
         {
-            FullPacked newFullPacked = new FullPacked();
-
-            newFullPacked.serverPosition = transform.position;
-            newFullPacked.serverRotation = transform.rotation.eulerAngles;
-
-            fullPacked = newFullPacked;
-
             lastSendedPosition = transform.position;
-            lastSendedRotation = transform.rotation.eulerAngles;
+            lastSendedRotation = transform.rotation;
         }
 
-        bool ConvertToByte(float value, ref byte result)
+        short ConvertToShort(float value)
         {
             var tmp = Math.Round(value, 2);
-            if(Math.Abs(tmp) > 1.27)
-            {
-                IsSendAll = true;
-                result = 0;
-                return false;
-            }
-            else
-            {
-                tmp *= 100;
-                tmp += 128;
-                result = (byte)tmp;
-                return true;
-            }
+            tmp *= 100;
+            return (short)tmp;
         }
 
         #endregion
 
         #region Client
 
-        void applyFullPocked(FullPacked oldValue, FullPacked newValue)
+        void Start()
         {
-            lastSendedPosition = fullPacked.serverPosition;
-            lastSendedRotation = fullPacked.serverRotation;
+            //lastSendedPosition = transform.position;
+            //lastSendedRotation = transform.rotation.eulerAngles;
+        }
+
+        //void applyFullPocked(FullPacked oldValue, FullPacked newValue)
+        //{
+        //    lastSendedPosition = fullPacked.serverPosition;
+        //    lastSendedRotation = fullPacked.serverRotation;
+        //}
+
+        [ClientCallback]
+        void Update()
+        {
+            if (!isServer)
+            {
+                InterpolatePosition();
+            }
+        }
+
+        void InterpolatePosition()
+        {
+            Vector3 deltaPos = new Vector3();
+            newPos = new Vector3();
+
+            //Debug.Log($"packed.serverPosY = {packed.serverPosY}");
+
+            deltaPos.x = (float)packed.serverPosX / 100f;
+            deltaPos.y = (float)packed.serverPosY / 100f;
+            deltaPos.z = (float)packed.serverPosZ / 100f;
+
+            newPos = lastSendedPosition + deltaPos;
+
+            //Debug.Log($"packed.serverPosY = {packed.serverPosY}");
+
+            //Debug.Log($"deltaPos = {deltaPos}");
+            //Debug.Log($"lastReceivedPosition = {lastReceivedPosition}");
+
+            //Debug.Log($"Новая позиция на клиенте: {newPos}");
+
+            float distanceToTarget = Vector3.Distance(transform.position, newPos);
+
+            float interpolationSpeed = distanceToTarget / updateTime;
+
+            transform.position = Vector3.MoveTowards(transform.position, newPos, interpolationSpeed * Time.deltaTime);
+
+            //Debug.Log($"{packed.serverPosX}, {packed.serverPosY}, {packed.serverPosZ}");
         }
 
         #endregion
 
         public void EMERGENCY_SYNC(Vector3 position, Vector3 rotation)
         {
-            throw new System.NotImplementedException();
+            int a = 0;
+            var b = a;
+
+            return;
         }
     }
 }
