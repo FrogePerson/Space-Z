@@ -16,6 +16,7 @@
 ## 👥 Команда
 - @FrogePerson - Programmer/Game Designer
 - @Chernica-Kwux-Person - Programmer/Game Designer
+- @spicykitty99 - 3D Designer/Game Designer
 
 ## 🔧 Стадия разработки
 - Создан проект
