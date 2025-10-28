@@ -10,15 +10,6 @@ namespace Network.Synchronizers
 {
     public class ByteSynchronizer : NetworkBehaviour, ISyncPosition
     {
-        struct SmallPacked
-        {
-            public short serverPosX;
-            public short serverPosY;
-            public short serverPosZ;
-
-            public short serverRotY;
-        }
-
         struct Packed
         {
             public short serverPosX;
@@ -30,48 +21,32 @@ namespace Network.Synchronizers
             public short serverRotZ;
         }
 
-        struct FullPacked
-        {
-            public Vector3 serverPosition;
-
-            public Quaternion serverRotation;
-        }
-
-        
-
-        [SyncVar]
-        SmallPacked smallPacked;
         [SyncVar]
         Packed packed;
-        //[SyncVar(hook = nameof(applyFullPocked))]
-        //FullPacked fullPacked;
 
         [SerializeField]
         [SyncVar]
         Vector3 lastSendedPosition = Vector3.zero;
+        [SyncVar]
         Quaternion lastSendedRotation = Quaternion.identity;
-
-        bool IsSendAll = false;
 
         [Header("Настройки")]
         [SerializeField]
-        bool IsUsingSmallPacket = false;
-        [SerializeField]
         float minDistanceToSend = 0.01f;
+        [SerializeField]
+        float minAngleToSend = 1f;
         [SerializeField]
         float updateTime = 0.05f;
 
         Vector3 newPos = Vector3.zero;
-        float interpolationSpeed = 2f;
+        Quaternion newRot = Quaternion.identity;
 
         #region Server
 
         public override void OnStartServer()
         {
             base.OnStartServer();
-
             InvokeRepeating(nameof(ServerUpdatePositionState), 0f, updateTime);
-
             lastSendedPosition = transform.position;
             lastSendedRotation = transform.rotation;
         }
@@ -80,107 +55,118 @@ namespace Network.Synchronizers
         void ServerUpdatePositionState()
         {
             Vector3 posDistance = transform.position - lastSendedPosition;
-            //Vector3 rotDistance = transform.rotation - lastSendedRotation;
+            float distance = posDistance.magnitude;
 
-            if(posDistance.magnitude < minDistanceToSend) return;
+            float angle = Quaternion.Angle(transform.rotation, lastSendedRotation);
 
-            bool IsNeedSendFullPacked = false;
+            if (distance < minDistanceToSend && angle < minAngleToSend)
+                return;
 
-            if(math.abs(posDistance.x) > 327.68) IsNeedSendFullPacked = true;
-            if (math.abs(posDistance.y) > 327.68) IsNeedSendFullPacked = true;
-            if (math.abs(posDistance.z) > 327.68) IsNeedSendFullPacked = true;
+            bool needFullReset = Mathf.Abs(posDistance.x) > 327.68f ||
+                               Mathf.Abs(posDistance.y) > 327.68f ||
+                               Mathf.Abs(posDistance.z) > 327.68f;
 
-            if (IsNeedSendFullPacked)
+            if (needFullReset)
             {
-                sendFullPacked();
-                Debug.Log("Отправили FullPacked!!");
+                lastSendedPosition = transform.position;
+                lastSendedRotation = transform.rotation;
                 return;
             }
 
-            Packed newPacked = new Packed();
+            Quaternion relativeRot = transform.rotation * Quaternion.Inverse(lastSendedRotation);
+            Vector3 eulerRelative = GetNormalizedEulerAngles(relativeRot);
 
-            newPacked.serverPosX = ConvertToShort(posDistance.x);
-            newPacked.serverPosY = ConvertToShort(posDistance.y);
-            newPacked.serverPosZ = ConvertToShort(posDistance.z);
+            Packed newPacked = new Packed
+            {
+                serverPosX = ConvertToShort(posDistance.x),
+                serverPosY = ConvertToShort(posDistance.y),
+                serverPosZ = ConvertToShort(posDistance.z),
+                serverRotX = ConvertToShort(eulerRelative.x),
+                serverRotY = ConvertToShort(eulerRelative.y),
+                serverRotZ = ConvertToShort(eulerRelative.z)
+            };
 
             packed = newPacked;
-            //Debug.Log($"{packed.serverPosX}, {packed.serverRotY}");
-        }
-
-        void sendFullPacked()
-        {
             lastSendedPosition = transform.position;
             lastSendedRotation = transform.rotation;
         }
 
+        Vector3 GetNormalizedEulerAngles(Quaternion quat)
+        {
+            Vector3 euler = quat.eulerAngles;
+
+            // Нормализуем углы в диапазон [-180, 180]
+            euler.x = NormalizeAngle(euler.x);
+            euler.y = NormalizeAngle(euler.y);
+            euler.z = NormalizeAngle(euler.z);
+
+            return euler;
+        }
+
+        float NormalizeAngle(float angle)
+        {
+            angle = angle % 360f;
+            if (angle > 180f)
+                angle -= 360f;
+            if (angle < -180f)
+                angle += 360f;
+            return angle;
+        }
+
         short ConvertToShort(float value)
         {
-            var tmp = Math.Round(value, 2);
-            tmp *= 100;
-            return (short)tmp;
+            return (short)Mathf.RoundToInt(value * 100f);
         }
 
         #endregion
 
         #region Client
 
-        void Start()
-        {
-            //lastSendedPosition = transform.position;
-            //lastSendedRotation = transform.rotation.eulerAngles;
-        }
-
-        //void applyFullPocked(FullPacked oldValue, FullPacked newValue)
-        //{
-        //    lastSendedPosition = fullPacked.serverPosition;
-        //    lastSendedRotation = fullPacked.serverRotation;
-        //}
-
         [ClientCallback]
         void Update()
         {
             if (!isServer)
             {
-                InterpolatePosition();
+                Interpolate();
             }
         }
 
-        void InterpolatePosition()
+        void Interpolate()
         {
-            Vector3 deltaPos = new Vector3();
-            newPos = new Vector3();
-
-            //Debug.Log($"packed.serverPosY = {packed.serverPosY}");
-
-            deltaPos.x = (float)packed.serverPosX / 100f;
-            deltaPos.y = (float)packed.serverPosY / 100f;
-            deltaPos.z = (float)packed.serverPosZ / 100f;
+            Vector3 deltaPos = new Vector3(
+                packed.serverPosX * 0.01f,
+                packed.serverPosY * 0.01f,
+                packed.serverPosZ * 0.01f
+            );
 
             newPos = lastSendedPosition + deltaPos;
 
-            //Debug.Log($"packed.serverPosY = {packed.serverPosY}");
-
-            //Debug.Log($"deltaPos = {deltaPos}");
-            //Debug.Log($"lastReceivedPosition = {lastReceivedPosition}");
-
-            //Debug.Log($"Новая позиция на клиенте: {newPos}");
-
             float distanceToTarget = Vector3.Distance(transform.position, newPos);
+            float posSpeed = distanceToTarget / updateTime;
+            transform.position = Vector3.MoveTowards(transform.position, newPos, posSpeed * Time.deltaTime);
 
-            float interpolationSpeed = distanceToTarget / updateTime;
+            Vector3 deltaRot = new Vector3(
+                packed.serverRotX * 0.01f,
+                packed.serverRotY * 0.01f,
+                packed.serverRotZ * 0.01f
+            );
 
-            transform.position = Vector3.MoveTowards(transform.position, newPos, interpolationSpeed * Time.deltaTime);
+            Quaternion relativeRot = Quaternion.Euler(deltaRot);
 
-            //Debug.Log($"{packed.serverPosX}, {packed.serverPosY}, {packed.serverPosZ}");
+            newRot = lastSendedRotation * relativeRot;
+
+ 
+            float angleToTarget = Quaternion.Angle(transform.rotation, newRot);
+            float rotSpeed = angleToTarget / updateTime;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, newRot, rotSpeed * Time.deltaTime);
+
+            //Debug.Log($"Вращение: текущее {transform.rotation.eulerAngles}, целевое {newRot.eulerAngles}");
         }
 
         #endregion
 
         public void EMERGENCY_SYNC(Vector3 position, Vector3 rotation)
         {
-            int a = 0;
-            var b = a;
-
             return;
         }
     }
