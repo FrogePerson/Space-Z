@@ -79,14 +79,23 @@ namespace Components.MobComponents
         protected virtual void Update()
         {
             stateView = baseStateMachine.State;
+            CheckStateCollisions();
             UpdateState();
+        }
+
+        protected virtual void InternalCheckStateCollisions()
+        {
+            if (baseStateMachine.HasState(BasicMobState.Falled))
+            {
+                SetState(BasicMobState.Falled);
+            }
         }
 
         protected virtual void CheckStateCollisions()
         {
             if((baseStateMachine.addedStates.Count <= 0) && (baseStateMachine.removedStates.Count <= 0)) return;
 
-
+            InternalCheckStateCollisions();
 
             baseStateMachine.addedStates.Clear();
             baseStateMachine.removedStates.Clear();
@@ -94,23 +103,73 @@ namespace Components.MobComponents
 
         protected virtual void UpdateState()
         {
-            foreach (var activeState in activeStates)
+            var statesToProcess = activeStates.ToList();
+
+            foreach (var state in statesToProcess)
             {
-                activeState();
+                state();
             }
         }
 
-        protected virtual void OnIdle() { }
-        protected virtual void OnMoving() { navigationController.Move(); }
-        protected virtual void OnStanding() { navigationController.Stand(); }
+        protected virtual void OnIdle()
+        {
+            ChangeState(BasicMobState.Idle, BasicMobState.Standing);
+        }
+        protected virtual void OnMoving() 
+        {
+            /*navigationController.Move();*/
+            Debug.Log("Moving...");
+        }
+        protected virtual void OnStanding() 
+        {
+            /*navigationController.Stand();*/
+
+            ChangeState(BasicMobState.Standing, BasicMobState.Moving);
+            AddState(BasicMobState.Attacking);
+        }
         protected virtual void OnStopped() { navigationController.Stop(); attackController.Stop(); }
         protected virtual void OnJumping() { navigationController.Jump(); }
-        protected virtual void OnFalled() { damageController.Fail(); }
+        protected virtual void OnFalled() 
+        {
+            /*damageController.Fail();*/
+            Debug.Log("Filing...");
+        }
         protected virtual void OnDying() { damageController.Die(); }
         protected virtual void OnDead() { damageController.OnDead(); }
-        protected virtual void OnAttacking() { attackController.Attack(); }
+        protected virtual void OnAttacking() 
+        {
+            /*attackController.Attack();*/
+            Debug.Log("Attacking...");
+            AddState(BasicMobState.Falled);
+        }
         protected virtual void OnStunned() { damageController.Stunning(); }
         protected virtual void OnDamaged() { damageController.GetDamage(); }
 
+        protected virtual void ChangeState(BasicMobState oldState, BasicMobState newState)
+        {
+            baseStateMachine.RemoveState(oldState);
+            baseStateMachine.AddState(newState);
+
+            activeStates.Remove(stateHandlers[defaultStatesMap[oldState]]);
+            activeStates.Add(stateHandlers[defaultStatesMap[newState]]);
+        }
+
+        protected virtual void AddState(BasicMobState newState)
+        {
+            baseStateMachine.AddState(newState);
+            activeStates.Add(stateHandlers[defaultStatesMap[newState]]);
+        }
+        protected virtual void RemoveState(BasicMobState newState)
+        {
+            baseStateMachine.RemoveState(newState);
+            activeStates.Remove(stateHandlers[defaultStatesMap[newState]]);
+        }
+        protected virtual void SetState(BasicMobState newState)
+        {
+            activeStates.Clear();
+            activeStates.Add(stateHandlers[defaultStatesMap[newState]]);
+
+            baseStateMachine.SetState(newState);
+        }
     }
 }

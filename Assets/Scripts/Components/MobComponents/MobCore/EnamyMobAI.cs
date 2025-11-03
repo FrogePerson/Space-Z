@@ -9,7 +9,19 @@ namespace Components.MobComponents
         protected override void OnIdle()
         {
             base.OnIdle();
-            Debug.Log("On Idle...");
+            Debug.Log("OnIdle..");
+        }
+
+        protected override void OnStanding()
+        {
+            base.OnStanding();
+            Debug.Log("OnStandingEnamy..");
+        }
+
+        protected override void InternalCheckStateCollisions()
+        {
+            base.InternalCheckStateCollisions();
+            
         }
     }
 }
