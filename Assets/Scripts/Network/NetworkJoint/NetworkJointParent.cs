@@ -40,7 +40,7 @@ namespace Network.NetworkJoint
 
                         if (force.magnitude >= 0)
                         {
-                            Debug.Log($"Уебали: {contact.thisCollider.name}, с силой: {force.magnitude}, под углом: {impactAngleFactor}");
+                            //Debug.Log($"Уебали: {contact.thisCollider.name}, с силой: {force.magnitude}, под углом: {impactAngleFactor}");
                         }
                         
                         if(force.magnitude >= breakForce)

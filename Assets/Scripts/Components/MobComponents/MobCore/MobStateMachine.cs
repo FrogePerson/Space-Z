@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Components.MobComponents
 {
-    public class MobStateMachine<T> : NetworkBehaviour where T : System.Enum, IConvertible
+    public class MobStateMachine<T> where T : System.Enum, IConvertible
     {
         [SerializeField]
         T _mobState;

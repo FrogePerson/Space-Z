@@ -8,6 +8,6 @@ namespace Components.MobComponents
 {
     public class EnamyMob : Mob
     {
-
+        
     }
 }

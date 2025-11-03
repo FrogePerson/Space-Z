@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Components.MobComponents
 {
@@ -18,29 +19,37 @@ namespace Components.MobComponents
         protected MobNavigationController navigationController;
         protected MobDamageController damageController;
 
+        [SerializeField]
+        BasicMobState stateView;
+
+        static Dictionary<BasicMobState, string> _defaultStatesMap;
         static protected Dictionary<BasicMobState, string> defaultStatesMap
         {
             get
             {
-                if(defaultStatesMap == null)
+                if (_defaultStatesMap == null)
                 {
-                    defaultStatesMap[BasicMobState.Idle] = "Idle";
-                    defaultStatesMap[BasicMobState.Moving] = "Moving";
-                    defaultStatesMap[BasicMobState.Standing] = "Standing";
-                    defaultStatesMap[BasicMobState.Stopped] = "Stopped";
-                    defaultStatesMap[BasicMobState.Jumping] = "Jumping";
-                    defaultStatesMap[BasicMobState.Falled] = "Falled";
-                    defaultStatesMap[BasicMobState.Dying] = "Dying";
-                    defaultStatesMap[BasicMobState.Dead] = "Dead";
-                    defaultStatesMap[BasicMobState.Attacking] = "Attacking";
-                    defaultStatesMap[BasicMobState.Stunned] = "Stunned";
-                    defaultStatesMap[BasicMobState.Damaged] = "Damaged";
+                    _defaultStatesMap = new Dictionary<BasicMobState, string>
+                    {
+                        { BasicMobState.Idle, "Idle" },
+                        { BasicMobState.Moving, "Moving" },
+                        { BasicMobState.Standing, "Standing" },
+                        { BasicMobState.Stopped, "Stopped" },
+                        { BasicMobState.Jumping, "Jumping" },
+                        { BasicMobState.Falled, "Falled" },
+                        { BasicMobState.Dying, "Dying" },
+                        { BasicMobState.Dead, "Dead" },
+                        { BasicMobState.Attacking, "Attacking" },
+                        { BasicMobState.Stunned, "Stunned" },
+                        { BasicMobState.Damaged, "Damaged" }
+                    };
                 }
-                return defaultStatesMap;
+                return _defaultStatesMap;
             }
         }
         protected virtual void Start()
         {
+            baseStateMachine = new MobStateMachine<BasicMobState>();
             baseStateMachine.SetState(BasicMobState.Idle);
 
             stateHandlers[defaultStatesMap[BasicMobState.Idle]] = OnIdle;
@@ -69,7 +78,8 @@ namespace Components.MobComponents
 
         protected virtual void Update()
         {
-            
+            stateView = baseStateMachine.State;
+            UpdateState();
         }
 
         protected virtual void CheckStateCollisions()
