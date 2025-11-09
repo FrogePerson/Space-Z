@@ -15,11 +15,11 @@ namespace Player
     /// содержит основные сведения об игроке
 
     [Tooltip("Общий класс игрока")]
-    public class Player : NetworkBehaviour, IDamageable
+    public class ActivePlayer : NetworkBehaviour, IDamageable
     {
         #region Start
 
-        static readonly ILog log = Log4NetLogger.SetLogger(typeof(Player));
+        static readonly ILog log = Log4NetLogger.SetLogger(typeof(ActivePlayer));
 
         public int ConnId;
 

@@ -8,7 +8,7 @@ namespace Player.PlayerMovment
     public class MoveController : NetworkBehaviour
     {
 
-        Player player;
+        ActivePlayer player;
 
         [SyncVar]
         Vector3 input = Vector3.zero;
@@ -17,7 +17,7 @@ namespace Player.PlayerMovment
         void Start()
         {
             service = GetComponent<MoveService>();
-            player = GetComponent<Player>();
+            player = GetComponent<ActivePlayer>();
 
             service.playerIdentity = player.ConnId;
         }

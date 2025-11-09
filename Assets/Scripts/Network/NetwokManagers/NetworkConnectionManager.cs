@@ -23,9 +23,9 @@ public class NetworkConnectionManager : NetworkBehaviour
         } 
     }
 
-    public readonly SyncList<Player.Player> Players = new SyncList<Player.Player>();
+    public readonly SyncList<Player.ActivePlayer> Players = new SyncList<Player.ActivePlayer>();
 
-    public Player.Player TryGetPlayerById(uint id)
+    public Player.ActivePlayer TryGetPlayerById(uint id)
     {
         return Players.FirstOrDefault(p => p != null && p.ConnId == id);
     }
@@ -39,14 +39,14 @@ public class NetworkConnectionManager : NetworkBehaviour
     }
 
     [Server]
-    public void ServerAddPlayerToList(Player.Player player)
+    public void ServerAddPlayerToList(Player.ActivePlayer player)
     {
         Players.Add(player);
 
         Log4NetLogger.Log($"Добавлен игрок с id = {player.ConnId}", log);
     }
     [Server]
-    public void ServerRemovePlayerFromList(Player.Player player)
+    public void ServerRemovePlayerFromList(Player.ActivePlayer player)
     {
         Players.Remove(player);
 

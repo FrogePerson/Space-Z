@@ -11,6 +11,10 @@ namespace Components.MobComponents
 {
     public class MobAICore: NetworkBehaviour
     {
+        protected Timer timer;
+
+        protected Transform transform;
+
         protected MobStateMachine<BasicMobState> baseStateMachine;
         protected Dictionary<string, Action> stateHandlers = new Dictionary<string, Action>();
         protected List<Action> activeStates = new List<Action>();
@@ -49,6 +53,9 @@ namespace Components.MobComponents
         }
         protected virtual void Start()
         {
+            timer = GetComponent<Timer>();
+            transform = GetComponent<Transform>();
+
             baseStateMachine = new MobStateMachine<BasicMobState>();
             baseStateMachine.SetState(BasicMobState.Idle);
 
@@ -123,9 +130,6 @@ namespace Components.MobComponents
         protected virtual void OnStanding() 
         {
             /*navigationController.Stand();*/
-
-            ChangeState(BasicMobState.Standing, BasicMobState.Moving);
-            AddState(BasicMobState.Attacking);
         }
         protected virtual void OnStopped() { navigationController.Stop(); attackController.Stop(); }
         protected virtual void OnJumping() { navigationController.Jump(); }
@@ -140,7 +144,6 @@ namespace Components.MobComponents
         {
             /*attackController.Attack();*/
             Debug.Log("Attacking...");
-            AddState(BasicMobState.Falled);
         }
         protected virtual void OnStunned() { damageController.Stunning(); }
         protected virtual void OnDamaged() { damageController.GetDamage(); }

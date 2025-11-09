@@ -16,7 +16,7 @@ namespace Components.MobComponents.Mobs.SpaceX.Spiderman
         protected override void OnStanding()
         {
             base.OnStanding();
-            Debug.Log("OnStanding..");
+            //Debug.Log("OnStanding..");
         }
     }
 }

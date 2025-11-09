@@ -12,6 +12,7 @@ namespace Components.MobComponents
         [SyncVar(hook = nameof(OnHpChanged))]
         [SerializeField]
         int _hp = 100;
+
         public int Hp
         {
             get
@@ -37,6 +38,13 @@ namespace Components.MobComponents
             {
                 _maxHp = value;
             }
+        }
+
+        MobAICore mobAICore;
+
+        protected virtual void Start()
+        {
+            mobAICore = GetComponent<MobAICore>();
         }
 
 

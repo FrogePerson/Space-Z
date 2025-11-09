@@ -62,9 +62,9 @@ public class ConnectionManager : NetworkManager
 
     [Header("Подключённые игроки: ")]
     [SerializeField]
-    List<Player.Player> Players = new List<Player.Player>();
+    List<Player.ActivePlayer> Players = new List<Player.ActivePlayer>();
 
-    public Player.Player TryGetPlayerById(int id)
+    public Player.ActivePlayer TryGetPlayerById(int id)
     {
         return Players.FirstOrDefault(p => p != null && p.ConnId == id);
     }
@@ -111,7 +111,7 @@ public class ConnectionManager : NetworkManager
             player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
             NetworkServer.AddPlayerForConnection(conn, player);
 
-            var tmp = player.GetComponent<Player.Player>();
+            var tmp = player.GetComponent<Player.ActivePlayer>();
 
             tmp.ConnId = conn.connectionId;
 

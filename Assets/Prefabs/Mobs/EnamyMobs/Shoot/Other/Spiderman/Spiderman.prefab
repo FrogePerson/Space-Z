@@ -3444,7 +3444,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f8a2791d96ffdd94980c57e020ec9721, type: 2}
+  - {fileID: 2100000, guid: dbd7cd2ae0f0cc143ad6ce1513732693, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5518,6 +5518,7 @@ GameObject:
   - component: {fileID: 3401346307879387413}
   - component: {fileID: 854438257427633919}
   - component: {fileID: 3236227201885276036}
+  - component: {fileID: 2599678697301822323}
   m_Layer: 0
   m_Name: Spiderman
   m_TagString: Untagged
@@ -5591,7 +5592,20 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  sysObj: {fileID: 0}
   stateView: 0
+--- !u!114 &2599678697301822323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7966498759153883950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b85bb1376e0c3e4894668a049d94084, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8089698484512668146
 GameObject:
   m_ObjectHideFlags: 0

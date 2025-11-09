@@ -10,7 +10,7 @@ namespace Player.PlayerLamp
     {
         static readonly ILog log = Log4NetLogger.SetLogger(typeof(PlayerLampController));
 
-        Player player;
+        ActivePlayer player;
 
         [SyncVar(hook = nameof(OnLampChanged))]
         [SerializeField]
@@ -18,7 +18,7 @@ namespace Player.PlayerLamp
 
         private void Awake()
         {
-            player = GetComponent<Player>();
+            player = GetComponent<ActivePlayer>();
         }
 
         void OnLampChanged(bool oldValue, bool newValue )
