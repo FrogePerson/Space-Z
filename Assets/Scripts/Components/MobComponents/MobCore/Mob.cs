@@ -13,6 +13,10 @@ namespace Components.MobComponents
         [SerializeField]
         int _hp = 100;
 
+        [SerializeField]
+        protected Transform attackTarget;
+        [SerializeField]
+        protected Transform moveTarget;
         public int Hp
         {
             get

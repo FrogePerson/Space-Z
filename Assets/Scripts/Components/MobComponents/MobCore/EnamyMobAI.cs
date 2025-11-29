@@ -11,8 +11,8 @@ namespace Components.MobComponents
 {
     public class EnamyMobAI : MobAICore
     {
-        protected List<ActivePlayer> players = new List<ActivePlayer>();
-        protected List<Transform> playersTransforms = new List<Transform>();
+        public List<ActivePlayer> players = new List<ActivePlayer>();
+        public List<Transform> playersTransforms = new List<Transform>();
         bool isFinding = false;
 
         EnamyMob self;
@@ -20,6 +20,7 @@ namespace Components.MobComponents
         {
             base.Start();
 
+            attackController.mobAI = this;
             self = GetComponent<EnamyMob>();
         }
 
@@ -54,7 +55,30 @@ namespace Components.MobComponents
             
         }
 
-        protected virtual void checkDistanceToPlayers()
+        public Transform GetNearestPlayerTransform()
+        {
+            if (playersTransforms.Count <= 0)
+            {
+                FillPlayersLists();
+            }
+
+            Transform nearestTransform = null;
+            float minDist = int.MaxValue;
+            foreach (var playerTransform in playersTransforms)
+            {
+                float distance = MathOperations.GetDistanceSqr(transform, playerTransform);
+                Debug.Log($"{playerTransform.name}.{distance}");
+                if (distance < minDist)
+                {
+                    minDist = distance;
+                    nearestTransform = playerTransform;
+                }
+                  
+            }
+            return nearestTransform;
+        }
+
+        public virtual void checkDistanceToPlayers()
         {
             Debug.Log("Finding.....");
 

@@ -6,7 +6,15 @@ namespace Components.MobComponents.Controllers
 {
     public class MobNavigationController : NetworkBehaviour
     {
+        [SerializeField]
+        public Transform moveTarget;
 
+        protected MobDamageController damageController;
+
+        protected virtual void Start()
+        {
+            damageController = GetComponent<MobDamageController>();
+        }
         public virtual void Move()
         {
 

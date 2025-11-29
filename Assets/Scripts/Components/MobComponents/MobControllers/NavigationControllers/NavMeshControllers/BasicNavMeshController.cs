@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using Components.MobComponents.Controllers;
+using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts.Components.MobComponents.MobControllers.NavigationControllers.NavMeshControllers
+namespace Components.MobComponents.Controllers
 {
-    public class BasicNavMeshController : MonoBehaviour
+    public class BasicNavMeshController : MobNavigationController
     {
 
     }

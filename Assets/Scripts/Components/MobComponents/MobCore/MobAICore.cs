@@ -55,6 +55,7 @@ namespace Components.MobComponents
         {
             timer = GetComponent<Timer>();
             transform = GetComponent<Transform>();
+            attackController = GetComponent<MobAttackController>();
 
             baseStateMachine = new MobStateMachine<BasicMobState>();
             baseStateMachine.SetState(BasicMobState.Idle);
@@ -142,8 +143,8 @@ namespace Components.MobComponents
         protected virtual void OnDead() { damageController.OnDead(); }
         protected virtual void OnAttacking() 
         {
-            /*attackController.Attack();*/
-            Debug.Log("Attacking...");
+            attackController.Attack();
+            //Debug.Log("Attacking...");
         }
         protected virtual void OnStunned() { damageController.Stunning(); }
         protected virtual void OnDamaged() { damageController.GetDamage(); }
